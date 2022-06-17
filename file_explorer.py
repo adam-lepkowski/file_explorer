@@ -5,12 +5,12 @@ class FileExplorer:
 
     def get_content(self, path):
         """
-        Return directory content with files and directories specified.
+        Return directory content.
 
         Returns
         ---------------
         dict
-            obj type: list of files/directories
+            obj type: list of file/directory paths
         """
 
         content = {
