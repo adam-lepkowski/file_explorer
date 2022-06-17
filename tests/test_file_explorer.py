@@ -23,3 +23,7 @@ class TestGetContent(unittest.TestCase):
             "dirs": [mocks[0], mocks[2]]
         }
         self.assertEqual(expected, result)
+
+    def test_get_content_invalid_path_raises_error(self):
+        with self.assertRaises(FileNotFoundError):
+            self.fe.get_content('invalid_path')
