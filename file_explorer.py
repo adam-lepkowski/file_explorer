@@ -1,4 +1,4 @@
-import os
+import pathlib
 
 
 class FileExplorer:
@@ -10,16 +10,20 @@ class FileExplorer:
         Returns
         ---------------
         dict
-            obj type: list of file/directory paths
+            obj type: list of Path objects representing files/directories
         """
 
-        content = {
-            "files": [],
-            "dirs": []
-        }
-        for obj in os.scandir(path):
-            if obj.is_file():
-                content["files"].append(obj.path)
-            elif obj.is_dir():
-                content["dirs"].append(obj.path)
-        return content
+        path = pathlib.Path(path)
+        if path.is_dir():
+            content = {
+                "files": [],
+                "dirs": []
+            }
+            for obj in path.iterdir():
+                if obj.is_file():
+                    content["files"].append(obj)
+                elif obj.is_dir():
+                    content["dirs"].append(obj)
+            return content
+        else:
+            raise FileNotFoundError("Directory does not exist")
