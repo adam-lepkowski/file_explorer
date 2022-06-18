@@ -43,7 +43,7 @@ class FileExplorer:
         src = pathlib.Path(src)
         dst = pathlib.Path(dst)
 
-        if not src.exists():
+        if not src.is_file():
             raise FileNotFoundError("Invalid source file path")
         elif not dst.is_dir():
             raise FileNotFoundError("Invalid destination directory path")
