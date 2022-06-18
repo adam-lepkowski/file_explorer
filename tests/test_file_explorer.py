@@ -37,3 +37,17 @@ class TestGetContent(unittest.TestCase):
         }
         result = self.fe.get_content(".")
         self.assertEqual(expected, result)
+
+
+class TestCopyFile(unittest.TestCase):
+
+    def setUp(self):
+        self.fe = FileExplorer()
+
+    @patch("file_explorer.pathlib.Path.is_file")
+    def test_src_not_file_raises_error(self, is_file_mock):
+        with self.assertRaises(FileNotFoundError):
+            is_file_mock.return_value = False
+            src = "src/path"
+            dst = "dst/path"
+            self.fe.copy_file(src, dst)
