@@ -27,3 +27,13 @@ class TestGetContent(unittest.TestCase):
     def test_get_content_invalid_path_raises_error(self):
         with self.assertRaises(FileNotFoundError):
             self.fe.get_content('invalid_path')
+
+    @patch("file_explorer.pathlib.Path.iterdir")
+    def test_get_content_empty_dir(self, iterdir_mock):
+        iterdir_mock.return_value = []
+        expected = {
+            "files": [],
+            "dirs": []
+        }
+        result = self.fe.get_content(".")
+        self.assertEqual(expected, result)
