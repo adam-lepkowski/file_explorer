@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import patch, Mock
+from pathlib import Path
 
 from file_explorer import FileExplorer
 
@@ -59,3 +60,13 @@ class TestCopyFile(unittest.TestCase):
             src = "src/path"
             dst = "dst/path"
             self.fe.copy_file(src, dst)
+
+    @patch("file_explorer.shutil.copy2")
+    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
+    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    def test_copy_file(self, is_file_mock, is_dir_mock, copy2_mock):
+        src = "src/path/foo.py"
+        dst = "src/path"
+        expected = "src/path/foo_copy.py"
+        self.fe.copy_file(src, dst)
+        copy2_mock.assert_called_with(Path(src), Path(expected))
