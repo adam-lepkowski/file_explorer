@@ -51,3 +51,11 @@ class TestCopyFile(unittest.TestCase):
             src = "src/path"
             dst = "dst/path"
             self.fe.copy_file(src, dst)
+
+    @patch("file_explorer.pathlib.Path.is_file")
+    def test_dst_not_dir_raises_error(self, is_file_mock):
+        with self.assertRaises(FileNotFoundError):
+            is_file_mock.return_value = True
+            src = "src/path"
+            dst = "dst/path"
+            self.fe.copy_file(src, dst)
