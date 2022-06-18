@@ -29,10 +29,15 @@ class FileExplorer:
         else:
             raise FileNotFoundError("Directory does not exist")
 
-    def copy(self, src, dst):
+    def copy_file(self, src, dst):
         """
-        Copy a file or directory into a specified destination directory.
-        If file copied into the same directory add an index suffix.
+        Copy a file into a specified destination directory.
+        Add a suffix if copying into the same directory.
+
+        Returns
+        ---------------
+        Path
+            Path object for the newly created file
         """
 
         src = pathlib.Path(src)
