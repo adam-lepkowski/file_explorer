@@ -48,11 +48,9 @@ class FileExplorer:
         elif not dst.is_dir():
             raise FileNotFoundError("Invalid destination directory path")
 
-        if src.parent == dst:
-            copied_fname = f"{src.stem}_copy{src.suffix}"
-            dst = dst / copied_fname
-            if dst.exists():
-                index = len(list(dst.parent.glob(f"{dst.stem}*{dst.suffix}")))
-                dst = dst.parent / f"{dst.stem}_{index + 1}{dst.suffix}"
+        dst = dst / src.name
+        if dst.exists():
+            index = len(list(dst.parent.glob(f"{dst.stem}*{dst.suffix}")))
+            dst = dst.parent / f"{src.stem}_copy_{index}{dst.suffix}"
 
         return pathlib.Path(shutil.copy2(src, dst))
