@@ -61,7 +61,7 @@ class TestCopyFile(unittest.TestCase):
     @patch("file_explorer.shutil.copy2")
     @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
     @patch("file_explorer.pathlib.Path.is_file", return_value=True)
-    def test_copy_file(self, is_file_mock, is_dir_mock, copy2_mock):
+    def test_copy_file_same_dir(self, is_file_mock, is_dir_mock, copy2_mock):
         src = "src/path/foo.py"
         dst = "src/path"
         expected = "src/path/foo_copy.py"
@@ -75,7 +75,7 @@ class TestCopyFile(unittest.TestCase):
     @patch("file_explorer.pathlib.Path.exists", return_value=True)
     @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
     @patch("file_explorer.pathlib.Path.is_file", return_value=True)
-    def test_copy_file_multiple_times(
+    def test_copy_file_multiple_times_same_dir(
             self, is_file_mock, is_dir_mock,
             exists_mock, glob_mock, copy2_mock):
         src = "src/path/foo.py"
