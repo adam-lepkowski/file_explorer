@@ -69,3 +69,19 @@ class TestCopyFile(unittest.TestCase):
         result = self.fe.copy_file(src, dst)
         copy2_mock.assert_called_with(Path(src), Path(expected))
         self.assertTrue(isinstance(result, Path))
+
+    @patch("file_explorer.shutil.copy2")
+    @patch("file_explorer.pathlib.Path.glob")
+    @patch("file_explorer.pathlib.Path.exists", return_value=True)
+    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
+    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    def test_copy_file_multiple_times(
+            self, is_file_mock, is_dir_mock,
+            exists_mock, glob_mock, copy2_mock):
+        src = "src/path/foo.py"
+        dst = "src/path"
+        for i in range(1, 10):
+            glob_mock.return_value = list(range(i))
+            expected = f"src/path/foo_copy_{i + 1}.py"
+            self.fe.copy_file(src, dst)
+            copy2_mock.assert_called_with(Path(src), Path(expected))
