@@ -54,3 +54,24 @@ class FileExplorer:
             dst = dst.parent / f"{src.stem}_copy_{index}{dst.suffix}"
 
         return pathlib.Path(shutil.copy2(src, dst))
+
+    def copy_dir(self, src, dst):
+        """
+        Copy directory with it's content to a dst location.
+        Add a suffix if directory already exists in dst.
+        """
+
+        src = pathlib.Path(src)
+        dst = pathlib.Path(dst)
+
+        if not src.is_dir():
+            raise FileNotFoundError("Invalid source directory path")
+        elif not dst.is_dir():
+            raise FileNotFoundError("Invalid destination directory path")
+
+        dst = dst / src.name
+        if dst.exists():
+            index = len(list(dst.parent.glob(f"{dst.stem}*")))
+            dst = dst.parent / f"{src.stem}_copy_{index}"
+
+        return pathlib.Path(shutil.copytree(src, dst))
