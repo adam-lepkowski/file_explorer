@@ -65,5 +65,7 @@ class TestCopyFile(unittest.TestCase):
         src = "src/path/foo.py"
         dst = "src/path"
         expected = "src/path/foo_copy.py"
-        self.fe.copy_file(src, dst)
+        copy2_mock.return_value = expected
+        result = self.fe.copy_file(src, dst)
         copy2_mock.assert_called_with(Path(src), Path(expected))
+        self.assertTrue(isinstance(result, Path))
