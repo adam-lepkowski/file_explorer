@@ -29,6 +29,42 @@ class FileExplorer:
         else:
             raise FileNotFoundError("Directory does not exist")
 
+    def is_valid_path(self, src, dst, src_type):
+        """
+        Check if src and dst are valid paths to files/dirs and suitable to copy
+
+        Parameters
+        ---------------
+        src : str
+            string representation of source file/directory
+        dst : str
+            string representation of destination directory
+        src_type : {dir, file}
+            string with src type (one of the above) to run appropriate checks
+
+        Returns
+        ---------------
+        tuple
+            both Path objects (src, dst)
+
+        Raises
+        ---------------
+        FileNotFoundError
+            If the src file/dir or dst dir are invalid
+        """
+
+        src = pathlib.Path(src)
+        dst = pathlib.Path(dst)
+
+        if src_type == "file" and not src.is_file():
+            raise FileNotFoundError("Invalid source file path")
+        elif src_type == "dir" and not src.is_dir():
+            raise FileNotFoundError("Invalid source directory path")
+        elif not dst.is_dir():
+            raise FileNotFoundError("Invalid destination directory path")
+
+        return src, dst
+
     def copy_file(self, src, dst):
         """
         Copy a file into a specified destination directory.
