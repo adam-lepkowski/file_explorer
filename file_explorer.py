@@ -32,7 +32,7 @@ class FileExplorer:
     def copy_file(self, src, dst):
         """
         Copy a file into a specified destination directory.
-        Add a suffix if copying into the same directory.
+        Add a suffix if file already exists in dst
 
         Returns
         ---------------
