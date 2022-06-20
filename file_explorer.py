@@ -75,19 +75,20 @@ class FileExplorer:
         Copy a file into a specified destination directory.
         Add a suffix if file already exists in dst
 
+        Parameters
+        ---------------
+        src : str
+            string representation of source file
+        dst : str
+            string representation of destination directory
+
         Returns
         ---------------
         Path
             Path object for the newly created file
         """
 
-        src = pathlib.Path(src)
-        dst = pathlib.Path(dst)
-
-        if not src.is_file():
-            raise FileNotFoundError("Invalid source file path")
-        elif not dst.is_dir():
-            raise FileNotFoundError("Invalid destination directory path")
+        src, dst = self.is_valid_path(src, dst, "file")
 
         dst = dst / src.name
         if dst.exists():
