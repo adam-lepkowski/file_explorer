@@ -8,10 +8,20 @@ class FileExplorer:
         """
         Return directory content.
 
+        Parameters
+        ---------------
+        path : str
+            directory path
+
         Returns
         ---------------
         dict
             obj type: list of Path objects representing files/directories
+
+        Raises
+        ---------------
+        FileNotFoundError
+            If path is not a directory
         """
 
         path = pathlib.Path(path)
