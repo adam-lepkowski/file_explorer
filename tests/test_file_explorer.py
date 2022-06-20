@@ -159,3 +159,16 @@ class TestCopyDir(unittest.TestCase):
         expected = Path("src/path/foo_copy_1")
         result = self.fe.copy_dir(self.src_dir, "src/path")
         copytree_mock.assert_called_with(Path(self.src_dir), Path(expected))
+
+    @patch("file_explorer.shutil.copytree")
+    @patch("file_explorer.FileExplorer.is_valid_path")
+    @patch("file_explorer.pathlib.Path.exists", return_value=True)
+    @patch("file_explorer.pathlib.Path.glob")
+    def test_copy_dir_same_dir_multiple(self, glob_mock, exists_mock,
+                                        vpath_mock, ctree_mock):
+        vpath_mock.return_value = (Path(self.src_dir), Path("src/path"))
+        for i in range(10):
+            glob_mock.return_value = list(range(i))
+            expected = Path(f"src/path/foo_copy_{i}")
+            result = self.fe.copy_dir(self.src_dir, "src/path")
+            ctree_mock.assert_called_with(Path(self.src_dir), Path(expected))
