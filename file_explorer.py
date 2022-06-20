@@ -101,15 +101,21 @@ class FileExplorer:
         """
         Copy directory with it's content to a dst location.
         Add a suffix if directory already exists in dst.
+
+        Parameters
+        ---------------
+        src : str
+            string representation of source directory
+        dst : str
+            string representation of destination directory
+
+        Returns
+        ---------------
+        Path
+            Path object for the newly created dir
         """
 
-        src = pathlib.Path(src)
-        dst = pathlib.Path(dst)
-
-        if not src.is_dir():
-            raise FileNotFoundError("Invalid source directory path")
-        elif not dst.is_dir():
-            raise FileNotFoundError("Invalid destination directory path")
+        src, dst = self.is_valid_path(src, dst, "dir")
 
         dst = dst / src.name
         if dst.exists():
