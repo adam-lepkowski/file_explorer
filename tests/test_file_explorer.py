@@ -146,3 +146,16 @@ class TestCopyDir(unittest.TestCase):
 
     def setUp(self):
         self.fe = FileExplorer()
+        self.src_dir = "src/path/foo"
+        self.dst_dir = "dst/path"
+
+    @patch("file_explorer.shutil.copytree")
+    @patch("file_explorer.FileExplorer.is_valid_path")
+    @patch("file_explorer.pathlib.Path.exists", return_value=True)
+    @patch("file_explorer.pathlib.Path.glob", return_value=[1])
+    def test_copy_dir_same_dir(self, glob_mock, exists_mock, vpath_mock,
+                               copytree_mock):
+        vpath_mock.return_value = (Path(self.src_dir), Path("src/path"))
+        expected = Path("src/path/foo_copy_1")
+        result = self.fe.copy_dir(self.src_dir, "src/path")
+        copytree_mock.assert_called_with(Path(self.src_dir), Path(expected))
