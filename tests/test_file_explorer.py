@@ -5,6 +5,25 @@ from pathlib import Path
 from file_explorer import FileExplorer
 
 
+class TestIsValidPath(unittest.TestCase):
+
+    def setUp(self):
+        self.fe = FileExplorer()
+        self.src_dir = "src/path"
+        self.src_file = "src/path/foo.py"
+        self.dst_dir = "dst/path"
+
+    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
+    def test_src_not_file_raises_error(self, is_dir_mock):
+        with self.assertRaises(FileNotFoundError):
+            self.fe.copy_file(self.src_file, self.dst_dir)
+
+    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    def test_dst_not_dir_raises_error(self, is_file_mock):
+        with self.assertRaises(FileNotFoundError):
+            self.fe.copy_file(self.src_file, self.dst_dir)
+
+
 class TestGetContent(unittest.TestCase):
 
     def setUp(self):
@@ -46,16 +65,6 @@ class TestCopyFile(unittest.TestCase):
         self.src_dir = "src/path"
         self.src_file = "src/path/foo.py"
         self.dst_dir = "dst/path"
-
-    @patch("file_explorer.pathlib.Path.is_file", return_value=False)
-    def test_src_not_file_raises_error(self, is_file_mock):
-        with self.assertRaises(FileNotFoundError):
-            self.fe.copy_file(self.src_dir, self.dst_dir)
-
-    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
-    def test_dst_not_dir_raises_error(self, is_file_mock):
-        with self.assertRaises(FileNotFoundError):
-            self.fe.copy_file(self.src_dir, self.dst_dir)
 
     @patch("file_explorer.shutil.copy2")
     @patch("file_explorer.pathlib.Path.glob")
