@@ -36,6 +36,12 @@ class TestIsValidPath(unittest.TestCase):
         result = self.fe.is_valid_path(self.src_file, self.dst_dir, name)
         self.assertEqual(expected, result)
 
+    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
+    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    def test_invalid_src_type_raises_error(self, is_file_mock, is_dir_mock):
+        with self.assertRaises(ValueError):
+            self.fe.is_valid_path(self.src_file, self.dst_dir, "foobartype")
+
 
 class TestGetContent(unittest.TestCase):
 
