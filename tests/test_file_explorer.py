@@ -140,3 +140,9 @@ class TestCopyFile(unittest.TestCase):
                 expected = f"dst/path/foo.py"
             self.fe.copy_file(self.src_file, self.dst_dir)
             copy2_mock.assert_called_with(Path(self.src_file), Path(expected))
+
+
+class TestCopyDir(unittest.TestCase):
+
+    def setUp(self):
+        self.fe = FileExplorer()
