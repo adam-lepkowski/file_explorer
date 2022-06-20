@@ -25,6 +25,17 @@ class TestIsValidPath(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             self.fe.is_valid_path(self.src_file, self.dst_dir, "dir")
 
+    @parameterized.expand([
+        ("file"),
+        ("dir")
+    ])
+    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
+    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    def test_is_valid_path(self, is_file_mock, is_dir_mock, name):
+        expected = (Path(self.src_file), Path(self.dst_dir))
+        result = self.fe.is_valid_path(self.src_file, self.dst_dir, name)
+        self.assertEqual(expected, result)
+
 
 class TestGetContent(unittest.TestCase):
 
