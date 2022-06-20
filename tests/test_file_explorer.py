@@ -2,6 +2,8 @@ import unittest
 from unittest.mock import patch, Mock
 from pathlib import Path
 
+from parameterized import parameterized
+
 from file_explorer import FileExplorer
 
 
@@ -16,12 +18,12 @@ class TestIsValidPath(unittest.TestCase):
     @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
     def test_src_not_file_raises_error(self, is_dir_mock):
         with self.assertRaises(FileNotFoundError):
-            self.fe.copy_file(self.src_file, self.dst_dir)
+            self.fe.is_valid_path(self.src_file, self.dst_dir, "file")
 
     @patch("file_explorer.pathlib.Path.is_file", return_value=True)
     def test_dst_not_dir_raises_error(self, is_file_mock):
         with self.assertRaises(FileNotFoundError):
-            self.fe.copy_file(self.src_file, self.dst_dir)
+            self.fe.is_valid_path(self.src_file, self.dst_dir, "dir")
 
 
 class TestGetContent(unittest.TestCase):
