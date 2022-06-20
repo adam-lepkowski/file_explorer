@@ -88,12 +88,11 @@ class TestCopyFile(unittest.TestCase):
     @patch("file_explorer.shutil.copy2")
     @patch("file_explorer.pathlib.Path.glob")
     @patch("file_explorer.pathlib.Path.exists", return_value=True)
-    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
-    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
-    def test_copy_file_same_dir(self, is_file_mock, is_dir_mock, exists_mock,
-                                glob_mock, copy2_mock):
-
+    @patch("file_explorer.FileExplorer.is_valid_path")
+    def test_copy_file_same_dir(self, vpath_mock, exists_mock, glob_mock,
+                                copy2_mock):
         expected = "src/path/foo_copy_1.py"
+        vpath_mock.return_value = (Path(self.src_file), Path(self.src_dir))
         glob_mock.return_value = [1]
         copy2_mock.return_value = expected
         result = self.fe.copy_file(self.src_file, self.src_dir)
@@ -103,11 +102,10 @@ class TestCopyFile(unittest.TestCase):
     @patch("file_explorer.shutil.copy2")
     @patch("file_explorer.pathlib.Path.glob")
     @patch("file_explorer.pathlib.Path.exists", return_value=True)
-    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
-    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
-    def test_copy_file_multiple_times_same_dir(self, is_file_mock, is_dir_mock,
-                                               exists_mock, glob_mock,
-                                               copy2_mock):
+    @patch("file_explorer.FileExplorer.is_valid_path")
+    def test_copy_file_multiple_times_same_dir(self, vpath_mock, exists_mock,
+                                               glob_mock, copy2_mock):
+        vpath_mock.return_value = (Path(self.src_file), Path(self.src_dir))
         for i in range(1, 10):
             glob_mock.return_value = list(range(i))
             expected = f"src/path/foo_copy_{i}.py"
@@ -115,11 +113,10 @@ class TestCopyFile(unittest.TestCase):
             copy2_mock.assert_called_with(Path(self.src_file), Path(expected))
 
     @patch("file_explorer.shutil.copy2")
-    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
-    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
-    def test_copy_file_different_dir(self, is_file_mock, is_dir_mock,
-                                    copy2_mock):
+    @patch("file_explorer.FileExplorer.is_valid_path")
+    def test_copy_file_different_dir(self, vpath_mock, copy2_mock):
         expected = f"{self.dst_dir}/foo.py"
+        vpath_mock.return_value = (Path(self.src_file), Path(self.dst_dir))
         copy2_mock.return_value = expected
         result = self.fe.copy_file(self.src_file, self.dst_dir)
         copy2_mock.assert_called_with(Path(self.src_file), Path(expected))
@@ -128,11 +125,11 @@ class TestCopyFile(unittest.TestCase):
     @patch("file_explorer.shutil.copy2")
     @patch("file_explorer.pathlib.Path.glob")
     @patch("file_explorer.pathlib.Path.exists", return_value=False)
-    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
-    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
-    def test_copy_file_different_dir_multiple_times(self, is_file_mock,
-                                                    is_dir_mock,exists_mock,
-                                                    glob_mock, copy2_mock):
+    @patch("file_explorer.FileExplorer.is_valid_path")
+    def test_copy_file_different_dir_multiple_times(self, vpath_mock,
+                                                    exists_mock, glob_mock,
+                                                    copy2_mock):
+        vpath_mock.return_value = (Path(self.src_file), Path(self.dst_dir))
         for i in range(10):
             if i != 0:
                 exists_mock.return_value = True
