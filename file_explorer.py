@@ -51,7 +51,12 @@ class FileExplorer:
         ---------------
         FileNotFoundError
             If the src file/dir or dst dir are invalid
+        ValueError
+            If the src_type is not in {file, dir}
         """
+
+        if src_type not in ["file", "dir"]:
+            raise ValueError("Invalid src_type")
 
         src = pathlib.Path(src)
         dst = pathlib.Path(dst)
