@@ -66,7 +66,8 @@ class FileExplorer:
         """
 
         if src_type not in ["file", "dir"]:
-            raise ValueError("Invalid src_type")
+            msg = f"src_type should be 'file' or 'dir' not {src_type}"
+            raise ValueError(msg)
 
         src = pathlib.Path(src)
         dst = pathlib.Path(dst)
