@@ -176,3 +176,9 @@ class TestCopy(unittest.TestCase):
         self.src_file = "src/path/foo.py"
         self.src_dir = "src/path/foo"
         self.dst_dir = "dst/path"
+
+    @patch("file_explorer.pathlib.Path.is_file", return_value=False)
+    @patch("file_explorer.pathlib.Path.is_dir", return_value=False)
+    def test_copy_invalid_src_raises_error(self, is_dir_mock, is_file_mock):
+        with self.assertRaises(FileNotFoundError):
+            self.fe.copy(self.src_file, self.dst_dir)
