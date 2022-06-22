@@ -134,3 +134,35 @@ class FileExplorer:
             dst = dst.parent / f"{src.stem}_copy_{index}"
 
         return pathlib.Path(shutil.copytree(src, dst))
+
+    def copy(self, src, dst):
+        """
+        Copy file/dir into dst using copy_file/copy_dir depending on src type
+
+        Parameters
+        ---------------
+        src : str
+            string representation of source directory
+        dst : str
+            string representation of destination directory
+
+        Returns
+        ---------------
+        Path
+            Path object for the newly created file/dir
+
+        Raises
+        -------------
+        FileNotFoundError
+            If src path does not exist
+        """
+
+        src = pathlib.Path(src)
+        dst = pathlib.Path(dst)
+
+        if src.is_file():
+            return self.copy_file(src, dst)
+        elif src.is_dir():
+            return self.copy_dir(src, dst)
+        else:
+            raise FileNotFoundError("Invalid src path")
