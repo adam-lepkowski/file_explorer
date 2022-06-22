@@ -199,3 +199,28 @@ class TestCopy(unittest.TestCase):
         result = self.fe.copy(self.src_dir, self.dst_dir)
         cdir_mock.assert_called_with(Path(self.src_dir), Path(self.dst_dir))
         self.assertTrue(isinstance(result, Path))
+
+
+class TestMove(unittest.TestCase):
+
+    def setUp(self):
+        self.fe = FileExplorer()
+        self.src = Path("src/path/foo.py")
+        self.dst = "dst/path"
+
+    @patch.object(FileExplorer, "copy")
+    @patch("file_explorer.pathlib.Path.unlink")
+    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    def test_move_file(self, is_file_mock, unlink_mock, c_mock):
+        c_mock.return_value = self.src
+        self.fe.move(self.src, self.dst)
+        unlink_mock.assert_called_once()
+
+    @patch.object(FileExplorer, "copy")
+    @patch("file_explorer.shutil.rmtree")
+    @patch("file_explorer.pathlib.Path.is_file", return_value=False)
+    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
+    def test_move_dir(self, is_dir_mock, is_file_mock, rmtree_mock, c_mock):
+        c_mock.return_value = self.src
+        self.fe.move(self.src, self.dst)
+        rmtree_mock.assert_called_with(self.src)
