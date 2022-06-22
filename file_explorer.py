@@ -69,8 +69,8 @@ class FileExplorer:
             msg = f"src_type should be 'file' or 'dir' not {src_type}"
             raise ValueError(msg)
 
-        src = pathlib.Path(src)
-        dst = pathlib.Path(dst)
+        src = pathlib.Path(src) if not isinstance(src, pathlib.Path) else src
+        dst = pathlib.Path(dst) if not isinstance(dst, pathlib.Path) else dst
 
         if src_type == "file" and not src.is_file():
             raise FileNotFoundError("Invalid source file path")
@@ -88,10 +88,10 @@ class FileExplorer:
 
         Parameters
         ---------------
-        src : str
-            string representation of source file
-        dst : str
-            string representation of destination directory
+        src : str or Path
+            path to source file
+        dst : str or Path
+            path to destination dir
 
         Returns
         ---------------
@@ -115,10 +115,10 @@ class FileExplorer:
 
         Parameters
         ---------------
-        src : str
-            string representation of source directory
-        dst : str
-            string representation of destination directory
+        src : str or Path
+            path to source dir
+        dst : str or Path
+            path to destination dir
 
         Returns
         ---------------
