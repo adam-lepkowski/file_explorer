@@ -167,3 +167,12 @@ class TestCopyDir(unittest.TestCase):
             result = self.fe.copy_dir(self.src_dir, self.dst_dir)
             ctree_mock.assert_called_with(Path(self.src_dir), Path(expected))
             self.assertTrue(isinstance(result, Path))
+
+
+class TestCopy(unittest.TestCase):
+
+    def setUp(self):
+        self.fe = FileExplorer()
+        self.src_file = "src/path/foo.py"
+        self.src_dir = "src/path/foo"
+        self.dst_dir = "dst/path"
