@@ -182,3 +182,20 @@ class TestCopy(unittest.TestCase):
     def test_copy_invalid_src_raises_error(self, is_dir_mock, is_file_mock):
         with self.assertRaises(FileNotFoundError):
             self.fe.copy(self.src_file, self.dst_dir)
+
+    @patch.object(FileExplorer, "copy_file")
+    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    def test_copy_copies_file(self, is_file_mock, cfile_mock):
+        cfile_mock.return_value=Path(self.dst_dir) / "foo.py"
+        result = self.fe.copy(self.src_file, self.dst_dir)
+        cfile_mock.assert_called_with(Path(self.src_file), Path(self.dst_dir))
+        self.assertTrue(isinstance(result, Path))
+
+    @patch.object(FileExplorer, "copy_dir")
+    @patch("file_explorer.pathlib.Path.is_file", return_value=False)
+    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
+    def test_copy_copies_dir(self, is_dir_mock, is_file_mock, cdir_mock):
+        cdir_mock.return_value=Path(self.dst_dir) / "foo"
+        result = self.fe.copy(self.src_dir, self.dst_dir)
+        cdir_mock.assert_called_with(Path(self.src_dir), Path(self.dst_dir))
+        self.assertTrue(isinstance(result, Path))
