@@ -166,3 +166,29 @@ class FileExplorer:
             return self.copy_dir(src, dst)
         else:
             raise FileNotFoundError("Invalid src path")
+
+    def move(self, src, dst):
+        """
+        Move a src file/dir to dst dir.
+
+        Parameters
+        ---------------
+        src : str
+            string representation of source directory
+        dst : str
+            string representation of destination directory
+
+        Returns
+        ---------------
+        Path
+            Path object for the newly created file/dir
+        """
+
+        moved = self.copy(src, dst)
+        if moved:
+            src = pathlib.Path(src)
+            if src.is_file():
+                src.unlink()
+            elif src.is_dir():
+                shutil.rmtree(src)
+        return moved
