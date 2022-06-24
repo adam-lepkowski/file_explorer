@@ -77,6 +77,7 @@ class TestGetContent(unittest.TestCase):
         self.assertEqual(expected, result)
 
 
+@patch("file_explorer.shutil.copy2")
 class TestCopyFile(unittest.TestCase):
 
     def setUp(self):
@@ -85,7 +86,6 @@ class TestCopyFile(unittest.TestCase):
         self.src_file = "src/path/foo.py"
         self.dst_dir = "dst/path"
 
-    @patch("file_explorer.shutil.copy2")
     @patch("file_explorer.pathlib.Path.glob")
     @patch("file_explorer.pathlib.Path.exists", return_value=True)
     @patch("file_explorer.FileExplorer.is_valid_path")
@@ -99,7 +99,6 @@ class TestCopyFile(unittest.TestCase):
             copy2_mock.assert_called_with(Path(self.src_file), Path(expected))
             self.assertTrue(isinstance(result, Path))
 
-    @patch("file_explorer.shutil.copy2")
     @patch("file_explorer.pathlib.Path.glob")
     @patch("file_explorer.pathlib.Path.exists")
     @patch("file_explorer.FileExplorer.is_valid_path")
@@ -118,6 +117,7 @@ class TestCopyFile(unittest.TestCase):
             self.assertTrue(isinstance(result, Path))
 
 
+@patch("file_explorer.shutil.copytree")
 class TestCopyDir(unittest.TestCase):
 
     def setUp(self):
@@ -125,18 +125,16 @@ class TestCopyDir(unittest.TestCase):
         self.src_dir = "src/path/foo"
         self.dst_dir = "dst/path"
 
-    @patch("file_explorer.shutil.copytree")
     @patch("file_explorer.FileExplorer.is_valid_path")
     @patch("file_explorer.pathlib.Path.exists", return_value=True)
     @patch("file_explorer.pathlib.Path.glob", return_value=[1])
     def test_copy_dir_same_dir(self, glob_mock, exists_mock, vpath_mock,
-                               copytree_mock):
+                               ctree_mock):
         vpath_mock.return_value = (Path(self.src_dir), Path("src/path"))
         expected = Path("src/path/foo_copy_1")
         result = self.fe.copy_dir(self.src_dir, "src/path")
-        copytree_mock.assert_called_with(Path(self.src_dir), Path(expected))
+        ctree_mock.assert_called_with(Path(self.src_dir), Path(expected))
 
-    @patch("file_explorer.shutil.copytree")
     @patch("file_explorer.FileExplorer.is_valid_path")
     @patch("file_explorer.pathlib.Path.exists", return_value=True)
     @patch("file_explorer.pathlib.Path.glob")
@@ -149,7 +147,6 @@ class TestCopyDir(unittest.TestCase):
             result = self.fe.copy_dir(self.src_dir, "src/path")
             ctree_mock.assert_called_with(Path(self.src_dir), Path(expected))
 
-    @patch("file_explorer.shutil.copytree")
     @patch("file_explorer.FileExplorer.is_valid_path")
     @patch("file_explorer.pathlib.Path.exists")
     @patch("file_explorer.pathlib.Path.glob")
@@ -232,7 +229,7 @@ class TestRename(unittest.TestCase):
         self.fe = FileExplorer()
         self.src_file = "path/foo/bar.py"
         self.src_dir = "path/foo/bar"
-    
+
     @parameterized.expand([
         ("no_pref_suff", "path/foo/spam.py", None, None),
         ("prefix", "path/foo/prefix_spam.py", "prefix", None),
