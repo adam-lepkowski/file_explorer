@@ -11,7 +11,7 @@ class FileExplorer:
         Parameters
         ---------------
         path : str
-            directory path
+            dir path
 
         Returns
         ---------------
@@ -46,11 +46,11 @@ class FileExplorer:
         Parameters
         ---------------
         src : str
-            string representation of source file/directory
+            path to source file/dir
         dst : str
-            string representation of destination directory
+            path to destination dir
         src_type : {dir, file}
-            string with src type (one of the above) to run appropriate checks
+            src type (one of the above) to run appropriate checks
 
         Returns
         ---------------
@@ -142,9 +142,9 @@ class FileExplorer:
         Parameters
         ---------------
         src : str
-            string representation of source directory
+            path to source file/dir
         dst : str
-            string representation of destination directory
+            path to destination dir
 
         Returns
         ---------------
@@ -174,9 +174,9 @@ class FileExplorer:
         Parameters
         ---------------
         src : str
-            string representation of source directory
+            path to source file/dir
         dst : str
-            string representation of destination directory
+            path to destination dir
 
         Returns
         ---------------
@@ -200,7 +200,7 @@ class FileExplorer:
         Parameters
         ---------------
         src : str or Path
-            source file/dir
+            path to source file/dir
         dst : str or Path
             new file/dir name
         prefix : str
