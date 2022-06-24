@@ -192,3 +192,40 @@ class FileExplorer:
             elif src.is_dir():
                 shutil.rmtree(src)
         return moved
+
+    def rename(self, src, dst, prefix=None, suffix=None):
+        """
+        Rename src file/dir to dst. Dst should not have an extension.
+
+        Parameters
+        ---------------
+        src : str or Path
+            source file/dir
+        dst : str or Path
+            new file/dir name
+        prefix : str
+            add before dst - path/prefix_dst
+        suffix : str
+            add after dst stem, before extension - path/prefix_stem_suffix.ext
+
+        Returns
+        ---------------
+        Path
+            newly named file/dir path
+        """
+
+        if not isinstance(src, pathlib.Path):
+            src = pathlib.Path(src)
+
+        if not isinstance(dst, pathlib.Path):
+            dst = pathlib.Path(dst)
+
+        dst = src.parent / f"{dst.name}{src.suffix}"
+
+        if prefix:
+            dst = dst.parent / f"{prefix}_{dst.name}"
+
+        if suffix:
+            dst = dst.parent / f"{dst.stem}_{suffix}{dst.suffix}"
+
+        return src.rename(dst)
