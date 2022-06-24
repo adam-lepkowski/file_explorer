@@ -224,3 +224,23 @@ class TestMove(unittest.TestCase):
         c_mock.return_value = self.src
         self.fe.move(self.src, self.dst)
         rmtree_mock.assert_called_with(self.src)
+
+
+class TestRename(unittest.TestCase):
+
+    def setUp(self):
+        self.fe = FileExplorer()
+        self.src_file = "path/foo/bar.py"
+        self.src_dir = "path/foo/bar"
+    
+    @parameterized.expand([
+        ("no_pref_suff", "path/foo/spam.py", None, None),
+        ("prefix", "path/foo/prefix_spam.py", "prefix", None),
+        ("suffix", "path/foo/spam_suffix.py", None, "suffix"),
+        ("no_pref_suff", "path/foo/prefix_spam_suffix.py", "prefix", "suffix")
+    ])
+    @patch("file_explorer.pathlib.Path.rename")
+    def test_rename_file(self, name, expected, prefix, suffix, rename_mock):
+        expected = Path(expected)
+        self.fe.rename(self.src_file, "spam", prefix, suffix)
+        rename_mock.assert_called_with(expected)
