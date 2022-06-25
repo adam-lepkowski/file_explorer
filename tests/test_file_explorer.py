@@ -234,10 +234,22 @@ class TestRename(unittest.TestCase):
         ("no_pref_suff", "path/foo/spam.py", None, None),
         ("prefix", "path/foo/prefix_spam.py", "prefix", None),
         ("suffix", "path/foo/spam_suffix.py", None, "suffix"),
-        ("no_pref_suff", "path/foo/prefix_spam_suffix.py", "prefix", "suffix")
+        ("pref_suff", "path/foo/prefix_spam_suffix.py", "prefix", "suffix")
     ])
     @patch("file_explorer.pathlib.Path.rename")
     def test_rename_file(self, name, expected, prefix, suffix, rename_mock):
         expected = Path(expected)
         self.fe.rename(self.src_file, "spam", prefix, suffix)
+        rename_mock.assert_called_with(expected)
+
+    @parameterized.expand([
+        ("no_pref_suff", "path/foo/spam", None, None),
+        ("prefix", "path/foo/prefix_spam", "prefix", None),
+        ("suffix", "path/foo/spam_suffix", None, "suffix"),
+        ("pref_suff", "path/foo/prefix_spam_suffix", "prefix", "suffix")
+    ])
+    @patch("file_explorer.pathlib.Path.rename")
+    def test_rename_dir(self, name, expected, prefix, suffix, rename_mock):
+        expected = Path(expected)
+        self.fe.rename(self.src_dir, "spam", prefix, suffix)
         rename_mock.assert_called_with(expected)
