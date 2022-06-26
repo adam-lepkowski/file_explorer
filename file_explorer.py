@@ -1,5 +1,6 @@
 import pathlib
 import shutil
+import os
 
 
 class FileExplorer:
@@ -255,3 +256,13 @@ class FileExplorer:
             raise FileNotFoundError("Invalid src path")
 
         return None
+
+    def open_file(self, src):
+        """
+        Open a file in associated application.
+        """
+
+        src = pathlib.Path(src) if not isinstance(src, pathlib.Path) else src
+
+        if src.is_file():
+            os.startfile(src)
