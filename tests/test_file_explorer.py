@@ -267,3 +267,10 @@ class TestRm(unittest.TestCase):
     def test_rm_file(self, is_file_mock, unlink_mock):
         self.fe.rm(self.src_file)
         unlink_mock.assert_called_once()
+
+    @patch("file_explorer.shutil.rmtree")
+    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
+    @patch("file_explorer.pathlib.Path.is_file", return_value=False)
+    def test_rm_dir(self, is_file_mock, is_dir_mock, rmtree_mock):
+        self.fe.rm(self.src_dir)
+        rmtree_mock.assert_called_with(Path(self.src_dir))
