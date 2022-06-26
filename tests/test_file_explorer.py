@@ -291,3 +291,8 @@ class TestOpenFile(unittest.TestCase):
     def test_open_file(self, startfile_mock, is_file_mock):
         self.fe.open_file(self.src_file)
         startfile_mock.assert_called_with(Path(self.src_file))
+
+    @patch("file_explorer.os.startfile")
+    def test_open_file_not_a_file(self, startfile_mock):
+        self.fe.open_file(self.src_file)
+        startfile_mock.assert_not_called()
