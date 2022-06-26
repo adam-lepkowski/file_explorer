@@ -278,3 +278,16 @@ class TestRm(unittest.TestCase):
     def test_rm_invalid_path_raises_error(self):
         with self.assertRaises(FileNotFoundError):
             self.fe.rm(self.src_dir)
+
+
+class TestOpenFile(unittest.TestCase):
+
+    def setUp(self):
+        self.fe = FileExplorer()
+        self.src_file = "path/foo/bar.py"
+
+    @patch("file_explorer.pathlib.Path.is_file", retrun_value=True)
+    @patch("file_explorer.os.startfile")
+    def test_open_file(self, startfile_mock, is_file_mock):
+        self.fe.open_file(self.src_file)
+        startfile_mock.assert_called_with(Path(self.src_file))
