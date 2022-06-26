@@ -274,3 +274,7 @@ class TestRm(unittest.TestCase):
     def test_rm_dir(self, is_file_mock, is_dir_mock, rmtree_mock):
         self.fe.rm(self.src_dir)
         rmtree_mock.assert_called_with(Path(self.src_dir))
+
+    def test_rm_invalid_path_raises_error(self):
+        with self.assertRaises(FileNotFoundError):
+            self.fe.rm(self.src_dir)
