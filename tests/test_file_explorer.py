@@ -253,3 +253,17 @@ class TestRename(unittest.TestCase):
         expected = Path(expected)
         self.fe.rename(self.src_dir, "spam", prefix, suffix)
         rename_mock.assert_called_with(expected)
+
+
+class TestRm(unittest.TestCase):
+
+    def setUp(self):
+        self.fe = FileExplorer()
+        self.src_file = "path/foo/bar.py"
+        self.src_dir = "path/foo/bar"
+
+    @patch("file_explorer.pathlib.Path.unlink")
+    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    def test_rm_file(self, is_file_mock, unlink_mock):
+        self.fe.rm(self.src_file)
+        unlink_mock.assert_called_once()
