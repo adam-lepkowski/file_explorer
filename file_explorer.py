@@ -229,3 +229,29 @@ class FileExplorer:
             dst = dst.parent / f"{dst.stem}_{suffix}{dst.suffix}"
 
         return src.rename(dst)
+
+    def rm(self, src):
+        """
+        Remove src file/dir.
+
+        Parameters
+        ---------------
+        src : str or Path
+            path to source file/dir
+
+        Raises
+        ---------------
+        FileNotFoundError
+            If src path does not exist
+        """
+
+        src = pathlib.Path(src) if not isinstance(src, pathlib.Path) else src
+
+        if src.is_file():
+            src.unlink()
+        elif src.is_dir():
+            shutil.rmtree(src)
+        else:
+            raise FileNotFoundError("Invalid src path")
+
+        return None
