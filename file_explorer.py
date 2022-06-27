@@ -260,6 +260,11 @@ class FileExplorer:
     def open_file(self, src):
         """
         Open a file in associated application.
+
+        Parameters
+        ---------------
+        src : str or Path
+            path to source file
         """
 
         src = pathlib.Path(src) if not isinstance(src, pathlib.Path) else src
