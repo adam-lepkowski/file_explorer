@@ -17,3 +17,18 @@ class Cache:
 
         self.items = []
         self.current = -1
+
+    def store(self, item):
+        """
+        Store an item.
+
+        Parameters
+        ---------------
+        item
+            object to be stored
+        """
+
+        if self.current != len(self.items) - 1:
+            self.items = self.items[:self.current + 1]
+        self.items.append(item)
+        self.current += 1
