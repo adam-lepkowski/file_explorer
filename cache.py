@@ -8,9 +8,9 @@ class Cache:
         ---------------
         actions : list
             cached actions
-        current : dict
-            action to be performed
+        current : int
+            index pointing at current action
         """
-        
-        self.actions = []
-        self.current = {}
+
+        self._actions = []
+        self._current = -1
