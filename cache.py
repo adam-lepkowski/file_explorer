@@ -1,16 +1,19 @@
 class Cache:
+    """
+    Cache actions.
+
+    Attributes
+    ---------------
+    items : list
+        cached actions
+    current : int
+        index pointing at current action
+    """
 
     def __init__(self):
         """
-        Cache actions.
-
-        Attributes
-        ---------------
-        actions : list
-            cached actions
-        current : int
-            index pointing at current action
+        Cache constructor.
         """
 
-        self._actions = []
-        self._current = -1
+        self.items = []
+        self.current = -1
