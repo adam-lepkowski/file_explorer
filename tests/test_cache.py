@@ -12,3 +12,9 @@ class TestStore(unittest.TestCase):
         self.cache.store("foo")
         self.assertEqual(0, self.cache.current)
         self.assertEqual(["foo"], self.cache.items)
+
+    def test_store_clear_actions_ahead(self):
+        self.cache.items = ["foo", "bar", "foobar"]
+        self.cache.store("barfoo")
+        self.assertEqual(0, self.cache.current)
+        self.assertEqual(["barfoo"], self.cache.items)
