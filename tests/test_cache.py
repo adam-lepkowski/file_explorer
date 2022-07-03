@@ -46,3 +46,20 @@ class TestUndoRedo(unittest.TestCase):
         self.cache.items = items
         self.cache.redo()
         self.assertEqual(self.cache.current, expected)
+
+
+class TestGetCurrent(unittest.TestCase):
+
+    def setUp(self):
+        self.cache = Cache()
+
+    def test_get_current(self):
+        self.cache.current = 0
+        self.cache.items.append("item")
+        result = self.cache.get_current()
+        expected = "item"
+        self.assertEqual(expected, result)
+
+    def test_get_current_no_items_raises_error(self):
+        with self.assertRaises(IndexError):
+            self.cache.get_current()
