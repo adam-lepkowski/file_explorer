@@ -48,3 +48,15 @@ class Cache:
 
         if self.current < len(self.items) - 1:
             self.current += 1
+
+    def get_current(self):
+        """
+        Return action pointed by current.
+
+        Raises
+        ---------------
+        IndexError
+            if current points at item out of range
+        """
+
+        return self.items[self.current]
