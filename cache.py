@@ -34,9 +34,17 @@ class Cache:
         self.current += 1
 
     def undo(self):
+        """
+        Undo an action if there is more than one stored.
+        """
+
         if self.current > 0:
             self.current -= 1
 
     def redo(self):
+        """
+        Redo an action if current is not pointing at the last action.
+        """
+
         if self.current < len(self.items) - 1:
             self.current += 1
