@@ -2,6 +2,23 @@ from tkinter import ttk
 
 
 class ExplorerFrm(ttk.Frame):
+    """
+    Frame holding Explorer buttons and address bar.
+
+    Parameters
+    ---------------
+    root : Tk or any other container Frame
+        ExplorerFrm master window
+
+    Attributes
+    ---------------
+    parent_btn : ttk.Button
+        direct File Explorer to currently viewed directories parent
+    cnf_addr_brn : ttk.Button
+        confirm path entered to addr_bar
+    addr_bar : ttk.Entry
+        hold currently viewed directory absolute path
+    """
 
     def __init__(self, root):
         super().__init__(root)
