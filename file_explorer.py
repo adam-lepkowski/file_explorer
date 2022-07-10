@@ -4,6 +4,9 @@ import os
 
 
 class FileExplorer:
+    """
+    Explore file system. Move, copy, rename and delete files and directories.
+    """
 
     def get_content(self, path):
         """
