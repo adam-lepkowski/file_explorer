@@ -23,10 +23,12 @@ class GUI(tk.Tk):
         self.menubar.add_cascade(menu=self.view_menu, label="View")
         self.view_menu.add_command(label="New Explorer Frame")
         self.view_menu.add_command(label="New Tab", command=self.add_tab)
+        self.view_menu.add_command(label="Close Tab", command=self.close_tab)
         self.tab_1 = Container(self.nbook)
         self.nbook.add(self.tab_1, text="Tab 1")
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
+        self.bind("<Control_L><w>", self.close_tab)
 
     def add_tab(self):
         """
@@ -44,6 +46,7 @@ class GUI(tk.Tk):
 
         if len(self.nbook.tabs()) > 1:
             self.nbook.forget(self.nbook.select())
+
 
 g = GUI()
 g.mainloop()
