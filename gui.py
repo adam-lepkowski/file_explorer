@@ -12,10 +12,17 @@ class GUI(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("File Explorer")
+        self.option_add("*tearOff", tk.FALSE)
         self.style = ttk.Style()
         self.style.configure("ExpBar.TButton", width=5)
         self.nbook = ttk.Notebook(self)
         self.nbook.grid(row=0, column=0, sticky="nsew")
+        self.menubar = tk.Menu(self)
+        self["menu"] = self.menubar
+        self.view_menu = tk.Menu(self.menubar)
+        self.menubar.add_cascade(menu=self.view_menu, label="View")
+        self.view_menu.add_command(label="New Explorer Frame")
+        self.view_menu.add_command(label="New Tab")
         self.tab_1 = Container(self.nbook)
         self.nbook.add(self.tab_1, text="Tab 1")
         self.columnconfigure(0, weight=1)
