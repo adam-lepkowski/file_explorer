@@ -32,10 +32,18 @@ class GUI(tk.Tk):
         """
         Open new tab with Container set up.
         """
-        
+
         text = f"Tab {len(self.nbook.tabs()) + 1}"
         tab = Container(self.nbook)
         self.nbook.add(tab, text=text)
+
+    def close_tab(self, event=None):
+        """
+        Close currently viewed tab if more than one tab is open.
+        """
+
+        if len(self.nbook.tabs()) > 1:
+            self.nbook.forget(self.nbook.select())
 
 g = GUI()
 g.mainloop()
