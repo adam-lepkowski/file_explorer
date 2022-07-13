@@ -29,8 +29,9 @@ class GUI(tk.Tk):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
         self.bind("<Control_L><w>", self.close_tab)
+        self.bind("<Control_L><t>", self.add_tab)
 
-    def add_tab(self):
+    def add_tab(self, event=None):
         """
         Open new tab with Container set up.
         """
