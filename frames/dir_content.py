@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 
-class ExplorerTree(ttk.Frame):
+class DirContent(ttk.Frame):
     """
     Frame holding treeview to browse directory content.
 

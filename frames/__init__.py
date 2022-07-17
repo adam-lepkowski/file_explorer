@@ -1,3 +1,3 @@
 from frames.explorer_frame import ExplorerFrm
-from frames.explorer_tree import ExplorerTree
+from frames.dir_content import DirContent
 from frames.explorer_container import Container

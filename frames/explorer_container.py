@@ -1,6 +1,6 @@
 from tkinter import ttk
 
-from frames import ExplorerFrm, ExplorerTree
+from frames import ExplorerFrm, DirContent
 
 
 class Container(ttk.Frame):
@@ -11,7 +11,7 @@ class Container(ttk.Frame):
     ---------------
     frm : ExplorerFrm
         address bar and associated buttons
-    tree_frm : ExplorerTree
+    tree_frm : DirContent
         directory content view and manipulation
     """
 
@@ -19,7 +19,7 @@ class Container(ttk.Frame):
         super().__init__(root)
         self.frm = ExplorerFrm(self)
         self.frm.grid(row=0, column=0, sticky="we")
-        self.tree_frm = ExplorerTree(self)
+        self.tree_frm = DirContent(self)
         self.tree_frm.grid(row=1, column=0, sticky="nsew")
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
