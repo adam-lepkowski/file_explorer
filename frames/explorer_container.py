@@ -1,6 +1,6 @@
 from tkinter import ttk
 
-from frames import ExplorerFrm, DirContent
+from frames import NavBar, DirContent
 
 
 class Container(ttk.Frame):
@@ -9,7 +9,7 @@ class Container(ttk.Frame):
 
     Attributes
     ---------------
-    frm : ExplorerFrm
+    frm : NavBar
         address bar and associated buttons
     tree_frm : DirContent
         directory content view and manipulation
@@ -17,7 +17,7 @@ class Container(ttk.Frame):
 
     def __init__(self, root):
         super().__init__(root)
-        self.frm = ExplorerFrm(self)
+        self.frm = NavBar(self)
         self.frm.grid(row=0, column=0, sticky="we")
         self.tree_frm = DirContent(self)
         self.tree_frm.grid(row=1, column=0, sticky="nsew")

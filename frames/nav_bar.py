@@ -1,7 +1,7 @@
 from tkinter import ttk
 
 
-class ExplorerFrm(ttk.Frame):
+class NavBar(ttk.Frame):
     """
     Frame holding Explorer buttons and address bar.
 
