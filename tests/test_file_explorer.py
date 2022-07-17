@@ -4,7 +4,7 @@ from pathlib import Path
 
 from parameterized import parameterized
 
-from file_explorer import FileExplorer
+from explorer import FileExplorer
 
 
 class TestIsValidPath(unittest.TestCase):
@@ -15,12 +15,12 @@ class TestIsValidPath(unittest.TestCase):
         self.src_file = "src/path/foo.py"
         self.dst_dir = "dst/path"
 
-    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
+    @patch("explorer.file_explorer.pathlib.Path.is_dir", return_value=True)
     def test_src_not_file_raises_error(self, is_dir_mock):
         with self.assertRaises(FileNotFoundError):
             self.fe.is_valid_path(self.src_file, self.dst_dir, "file")
 
-    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    @patch("explorer.file_explorer.pathlib.Path.is_file", return_value=True)
     def test_dst_not_dir_raises_error(self, is_file_mock):
         with self.assertRaises(FileNotFoundError):
             self.fe.is_valid_path(self.src_file, self.dst_dir, "dir")
@@ -29,15 +29,15 @@ class TestIsValidPath(unittest.TestCase):
         ("file"),
         ("dir")
     ])
-    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
-    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    @patch("explorer.file_explorer.pathlib.Path.is_dir", return_value=True)
+    @patch("explorer.file_explorer.pathlib.Path.is_file", return_value=True)
     def test_is_valid_path(self, name, is_file_mock, is_dir_mock):
         expected = (Path(self.src_file), Path(self.dst_dir))
         result = self.fe.is_valid_path(self.src_file, self.dst_dir, name)
         self.assertEqual(expected, result)
 
-    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
-    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    @patch("explorer.file_explorer.pathlib.Path.is_dir", return_value=True)
+    @patch("explorer.file_explorer.pathlib.Path.is_file", return_value=True)
     def test_invalid_src_type_raises_error(self, is_file_mock, is_dir_mock):
         with self.assertRaises(ValueError):
             self.fe.is_valid_path(self.src_file, self.dst_dir, "foobartype")
@@ -48,7 +48,7 @@ class TestGetContent(unittest.TestCase):
     def setUp(self):
         self.fe = FileExplorer()
 
-    @patch("file_explorer.pathlib.Path.iterdir")
+    @patch("explorer.file_explorer.pathlib.Path.iterdir")
     def test_get_content(self, iterdir_mock):
         mocks = [Mock() for _ in range(4)]
         for i, mock in enumerate(mocks):
@@ -67,7 +67,7 @@ class TestGetContent(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             self.fe.get_content('invalid_path')
 
-    @patch("file_explorer.pathlib.Path.iterdir", return_value=[])
+    @patch("explorer.file_explorer.pathlib.Path.iterdir", return_value=[])
     def test_get_content_empty_dir(self, iterdir_mock):
         expected = {
             "files": [],
@@ -77,7 +77,7 @@ class TestGetContent(unittest.TestCase):
         self.assertEqual(expected, result)
 
 
-@patch("file_explorer.shutil.copy2")
+@patch("explorer.file_explorer.shutil.copy2")
 class TestCopyFile(unittest.TestCase):
 
     def setUp(self):
@@ -86,9 +86,9 @@ class TestCopyFile(unittest.TestCase):
         self.src_file = "src/path/foo.py"
         self.dst_dir = "dst/path"
 
-    @patch("file_explorer.pathlib.Path.glob")
-    @patch("file_explorer.pathlib.Path.exists", return_value=True)
-    @patch("file_explorer.FileExplorer.is_valid_path")
+    @patch("explorer.file_explorer.pathlib.Path.glob")
+    @patch("explorer.file_explorer.pathlib.Path.exists", return_value=True)
+    @patch("explorer.file_explorer.FileExplorer.is_valid_path")
     def test_copy_file_same_dir(self, vpath_mock, exists_mock, glob_mock,
                                 copy2_mock):
         vpath_mock.return_value = (Path(self.src_file), Path(self.src_dir))
@@ -99,9 +99,9 @@ class TestCopyFile(unittest.TestCase):
             copy2_mock.assert_called_with(Path(self.src_file), Path(expected))
             self.assertTrue(isinstance(result, Path))
 
-    @patch("file_explorer.pathlib.Path.glob")
-    @patch("file_explorer.pathlib.Path.exists")
-    @patch("file_explorer.FileExplorer.is_valid_path")
+    @patch("explorer.file_explorer.pathlib.Path.glob")
+    @patch("explorer.file_explorer.pathlib.Path.exists")
+    @patch("explorer.file_explorer.FileExplorer.is_valid_path")
     def test_copy_file_different_dir(self, vpath_mock, exists_mock, glob_mock,
                                      copy2_mock):
         vpath_mock.return_value = (Path(self.src_file), Path(self.dst_dir))
@@ -117,7 +117,7 @@ class TestCopyFile(unittest.TestCase):
             self.assertTrue(isinstance(result, Path))
 
 
-@patch("file_explorer.shutil.copytree")
+@patch("explorer.file_explorer.shutil.copytree")
 class TestCopyDir(unittest.TestCase):
 
     def setUp(self):
@@ -125,9 +125,9 @@ class TestCopyDir(unittest.TestCase):
         self.src_dir = "src/path/foo"
         self.dst_dir = "dst/path"
 
-    @patch("file_explorer.FileExplorer.is_valid_path")
-    @patch("file_explorer.pathlib.Path.exists", return_value=True)
-    @patch("file_explorer.pathlib.Path.glob", return_value=[1])
+    @patch("explorer.file_explorer.FileExplorer.is_valid_path")
+    @patch("explorer.file_explorer.pathlib.Path.exists", return_value=True)
+    @patch("explorer.file_explorer.pathlib.Path.glob", return_value=[1])
     def test_copy_dir_same_dir(self, glob_mock, exists_mock, vpath_mock,
                                ctree_mock):
         vpath_mock.return_value = (Path(self.src_dir), Path("src/path"))
@@ -135,9 +135,9 @@ class TestCopyDir(unittest.TestCase):
         result = self.fe.copy_dir(self.src_dir, "src/path")
         ctree_mock.assert_called_with(Path(self.src_dir), Path(expected))
 
-    @patch("file_explorer.FileExplorer.is_valid_path")
-    @patch("file_explorer.pathlib.Path.exists", return_value=True)
-    @patch("file_explorer.pathlib.Path.glob")
+    @patch("explorer.file_explorer.FileExplorer.is_valid_path")
+    @patch("explorer.file_explorer.pathlib.Path.exists", return_value=True)
+    @patch("explorer.file_explorer.pathlib.Path.glob")
     def test_copy_dir_same_dir_multiple(self, glob_mock, exists_mock,
                                         vpath_mock, ctree_mock):
         vpath_mock.return_value = (Path(self.src_dir), Path("src/path"))
@@ -147,9 +147,9 @@ class TestCopyDir(unittest.TestCase):
             result = self.fe.copy_dir(self.src_dir, "src/path")
             ctree_mock.assert_called_with(Path(self.src_dir), Path(expected))
 
-    @patch("file_explorer.FileExplorer.is_valid_path")
-    @patch("file_explorer.pathlib.Path.exists")
-    @patch("file_explorer.pathlib.Path.glob")
+    @patch("explorer.file_explorer.FileExplorer.is_valid_path")
+    @patch("explorer.file_explorer.pathlib.Path.exists")
+    @patch("explorer.file_explorer.pathlib.Path.glob")
     def test_copy_dir_different_dir(self, glob_mock, exists_mock, vpath_mock,
                                     ctree_mock):
         vpath_mock.return_value = (Path(self.src_dir), Path(self.dst_dir))
@@ -174,14 +174,14 @@ class TestCopy(unittest.TestCase):
         self.src_dir = "src/path/foo"
         self.dst_dir = "dst/path"
 
-    @patch("file_explorer.pathlib.Path.is_file", return_value=False)
-    @patch("file_explorer.pathlib.Path.is_dir", return_value=False)
+    @patch("explorer.file_explorer.pathlib.Path.is_file", return_value=False)
+    @patch("explorer.file_explorer.pathlib.Path.is_dir", return_value=False)
     def test_copy_invalid_src_raises_error(self, is_dir_mock, is_file_mock):
         with self.assertRaises(FileNotFoundError):
             self.fe.copy(self.src_file, self.dst_dir)
 
     @patch.object(FileExplorer, "copy_file")
-    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    @patch("explorer.file_explorer.pathlib.Path.is_file", return_value=True)
     def test_copy_copies_file(self, is_file_mock, cfile_mock):
         cfile_mock.return_value=Path(self.dst_dir) / "foo.py"
         result = self.fe.copy(self.src_file, self.dst_dir)
@@ -189,8 +189,8 @@ class TestCopy(unittest.TestCase):
         self.assertTrue(isinstance(result, Path))
 
     @patch.object(FileExplorer, "copy_dir")
-    @patch("file_explorer.pathlib.Path.is_file", return_value=False)
-    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
+    @patch("explorer.file_explorer.pathlib.Path.is_file", return_value=False)
+    @patch("explorer.file_explorer.pathlib.Path.is_dir", return_value=True)
     def test_copy_copies_dir(self, is_dir_mock, is_file_mock, cdir_mock):
         cdir_mock.return_value=Path(self.dst_dir) / "foo"
         result = self.fe.copy(self.src_dir, self.dst_dir)
@@ -206,17 +206,17 @@ class TestMove(unittest.TestCase):
         self.dst = "dst/path"
 
     @patch.object(FileExplorer, "copy")
-    @patch("file_explorer.pathlib.Path.unlink")
-    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    @patch("explorer.file_explorer.pathlib.Path.unlink")
+    @patch("explorer.file_explorer.pathlib.Path.is_file", return_value=True)
     def test_move_file(self, is_file_mock, unlink_mock, c_mock):
         c_mock.return_value = self.src
         self.fe.move(self.src, self.dst)
         unlink_mock.assert_called_once()
 
     @patch.object(FileExplorer, "copy")
-    @patch("file_explorer.shutil.rmtree")
-    @patch("file_explorer.pathlib.Path.is_file", return_value=False)
-    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
+    @patch("explorer.file_explorer.shutil.rmtree")
+    @patch("explorer.file_explorer.pathlib.Path.is_file", return_value=False)
+    @patch("explorer.file_explorer.pathlib.Path.is_dir", return_value=True)
     def test_move_dir(self, is_dir_mock, is_file_mock, rmtree_mock, c_mock):
         c_mock.return_value = self.src
         self.fe.move(self.src, self.dst)
@@ -236,7 +236,7 @@ class TestRename(unittest.TestCase):
         ("suffix", "path/foo/spam_suffix.py", None, "suffix"),
         ("pref_suff", "path/foo/prefix_spam_suffix.py", "prefix", "suffix")
     ])
-    @patch("file_explorer.pathlib.Path.rename")
+    @patch("explorer.file_explorer.pathlib.Path.rename")
     def test_rename_file(self, name, expected, prefix, suffix, rename_mock):
         expected = Path(expected)
         self.fe.rename(self.src_file, "spam", prefix, suffix)
@@ -248,7 +248,7 @@ class TestRename(unittest.TestCase):
         ("suffix", "path/foo/spam_suffix", None, "suffix"),
         ("pref_suff", "path/foo/prefix_spam_suffix", "prefix", "suffix")
     ])
-    @patch("file_explorer.pathlib.Path.rename")
+    @patch("explorer.file_explorer.pathlib.Path.rename")
     def test_rename_dir(self, name, expected, prefix, suffix, rename_mock):
         expected = Path(expected)
         self.fe.rename(self.src_dir, "spam", prefix, suffix)
@@ -262,15 +262,15 @@ class TestRm(unittest.TestCase):
         self.src_file = "path/foo/bar.py"
         self.src_dir = "path/foo/bar"
 
-    @patch("file_explorer.pathlib.Path.unlink")
-    @patch("file_explorer.pathlib.Path.is_file", return_value=True)
+    @patch("explorer.file_explorer.pathlib.Path.unlink")
+    @patch("explorer.file_explorer.pathlib.Path.is_file", return_value=True)
     def test_rm_file(self, is_file_mock, unlink_mock):
         self.fe.rm(self.src_file)
         unlink_mock.assert_called_once()
 
-    @patch("file_explorer.shutil.rmtree")
-    @patch("file_explorer.pathlib.Path.is_dir", return_value=True)
-    @patch("file_explorer.pathlib.Path.is_file", return_value=False)
+    @patch("explorer.file_explorer.shutil.rmtree")
+    @patch("explorer.file_explorer.pathlib.Path.is_dir", return_value=True)
+    @patch("explorer.file_explorer.pathlib.Path.is_file", return_value=False)
     def test_rm_dir(self, is_file_mock, is_dir_mock, rmtree_mock):
         self.fe.rm(self.src_dir)
         rmtree_mock.assert_called_with(Path(self.src_dir))
@@ -286,13 +286,13 @@ class TestOpenFile(unittest.TestCase):
         self.fe = FileExplorer()
         self.src_file = "path/foo/bar.py"
 
-    @patch("file_explorer.pathlib.Path.is_file", retrun_value=True)
-    @patch("file_explorer.os.startfile")
+    @patch("explorer.file_explorer.pathlib.Path.is_file", retrun_value=True)
+    @patch("explorer.file_explorer.os.startfile")
     def test_open_file(self, startfile_mock, is_file_mock):
         self.fe.open_file(self.src_file)
         startfile_mock.assert_called_with(Path(self.src_file))
 
-    @patch("file_explorer.os.startfile")
+    @patch("explorer.file_explorer.os.startfile")
     def test_open_file_not_a_file(self, startfile_mock):
         self.fe.open_file(self.src_file)
         startfile_mock.assert_not_called()

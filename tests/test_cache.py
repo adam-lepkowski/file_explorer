@@ -2,7 +2,7 @@ import unittest
 
 from parameterized import parameterized
 
-from cache import Cache
+from explorer import Cache
 
 
 class TestStore(unittest.TestCase):
