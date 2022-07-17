@@ -7,6 +7,14 @@ from frames import Explorer
 class GUI(tk.Tk):
     """
     GUI for file explorer.
+
+    Attributes
+    ---------------
+    style : ttk.Style
+    nbook : ttk.Notebook
+        represent Explorer frames in a tabbed view
+    menubar : tk.Menu
+        menu bar holding view options and methods
     """
 
     def __init__(self):
