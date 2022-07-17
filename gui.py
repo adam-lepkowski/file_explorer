@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
-from frames import Container
+from frames import Explorer
 
 
 class GUI(tk.Tk):
@@ -21,10 +21,15 @@ class GUI(tk.Tk):
         self["menu"] = self.menubar
         self.view_menu = tk.Menu(self.menubar)
         self.menubar.add_cascade(menu=self.view_menu, label="View")
-        self.view_menu.add_command(label="New Explorer Frame")
+        self.view_var = tk.StringVar()
+        self.view_var.set("double")
+        self.view_menu.add_checkbutton(
+            label="Toggle adjacent explorer", variable=self.view_var,
+            onvalue="double", offvalue="single"
+        )
         self.view_menu.add_command(label="New Tab", command=self.add_tab)
         self.view_menu.add_command(label="Close Tab", command=self.close_tab)
-        self.tab_1 = Container(self.nbook)
+        self.tab_1 = Explorer(self.nbook, view=self.view_var.get())
         self.nbook.add(self.tab_1, text="Tab 1")
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
@@ -37,7 +42,7 @@ class GUI(tk.Tk):
         """
 
         text = f"Tab {len(self.nbook.tabs()) + 1}"
-        tab = Container(self.nbook)
+        tab = Explorer(self.nbook, view=self.view_var.get())
         self.nbook.add(tab, text=text)
 
     def close_tab(self, event=None):
