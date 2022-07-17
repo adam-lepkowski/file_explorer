@@ -9,17 +9,17 @@ class Container(ttk.Frame):
 
     Attributes
     ---------------
-    frm : NavBar
+    nav_bar : NavBar
         address bar and associated buttons
-    tree_frm : DirContent
+    tree : DirContent
         directory content view and manipulation
     """
 
     def __init__(self, root):
         super().__init__(root)
-        self.frm = NavBar(self)
-        self.frm.grid(row=0, column=0, sticky="we")
-        self.tree_frm = DirContent(self)
-        self.tree_frm.grid(row=1, column=0, sticky="nsew")
+        self.nav_bar = NavBar(self)
+        self.nav_bar.grid(row=0, column=0, sticky="we")
+        self.tree = DirContent(self)
+        self.tree.grid(row=1, column=0, sticky="nsew")
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
