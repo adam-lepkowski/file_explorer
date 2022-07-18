@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from frames import Explorer
+from explorer import Facade
 
 
 class GUI(tk.Tk):
@@ -39,6 +40,7 @@ class GUI(tk.Tk):
         self.view_menu.add_command(label="Close Tab", command=self.close_tab)
         self.tab_1 = Explorer(self.nbook, view=self.view_var.get())
         self.nbook.add(self.tab_1, text="Tab 1")
+        self.fe = Facade()
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
         self.bind("<Control_L><w>", self.close_tab)
