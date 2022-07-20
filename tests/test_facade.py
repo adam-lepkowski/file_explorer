@@ -12,3 +12,9 @@ class TestGetDefaultDir(unittest.TestCase):
     def test_get_default_dir(self):
         result = self.facade.get_default_dir()
         self.assertTrue(isinstance(result, Path))
+
+
+class TestGetContent(unittest.TestCase):
+
+    def setUp(self):
+        self.facade = Facade()
