@@ -47,11 +47,21 @@ class GUI(tk.Tk):
 
     def add_tab(self, event=None):
         """
-        Open new tab with Container set up.
+        Open new tab. Set up container with default directory content displayed
         """
 
         text = f"Tab {len(self.nbook.tabs()) + 1}"
         tab = Explorer(self.nbook, view=self.view_var.get())
+        tab.l_frm.nav_bar.addr_bar.insert(0, self.fe.get_default_dir())
+        tab.r_frm.nav_bar.addr_bar.insert(0, self.fe.get_default_dir())
+        content = self.fe.get_content(self.fe.get_default_dir())
+        if self.view_var.get() == "double":
+            for row in content:
+                tab.l_frm.tree.tree.insert(parent='', index="end", values=row)
+                tab.r_frm.tree.tree.insert(parent='', index="end", values=row)
+        else:
+            for row in content:
+                tab.l_frm.tree.tree.insert(parent='', index="end", values=row)
         self.nbook.add(tab, text=text)
 
     def close_tab(self, event=None):
