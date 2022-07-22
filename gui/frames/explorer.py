@@ -13,6 +13,8 @@ class Container(ttk.Frame):
         address bar and associated buttons
     tree : DirContent
         directory content view and manipulation
+    current_dir : str
+        currently displayed directory
     """
 
     def __init__(self, root):
@@ -21,6 +23,7 @@ class Container(ttk.Frame):
         self.nav_bar.grid(row=0, column=0, sticky="we")
         self.tree = DirContent(self)
         self.tree.grid(row=1, column=0, sticky="nsew")
+        self.current_dir = ""
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
 
@@ -44,10 +47,6 @@ class Explorer(ttk.Frame):
         transfer buttons. Only in double view
     r_frm : Container
         frame positioned on the right side. Only in double view
-    l_current_dir : str
-        directory displayed in the left window
-    r_current_dir : str
-        directory displayed in the right window
     """
 
     def __init__(self, root, view="single"):
@@ -56,8 +55,6 @@ class Explorer(ttk.Frame):
         self.l_frm.grid(row=0, column=0, sticky="nsew")
         self.transfer_bar = ObjectTransfer(self)
         self.r_frm = Container(self)
-        self.l_current_dir = ""
-        self.r_current_dir = ""
         if view == "double":
             self.transfer_bar.grid(row=0, column=1, sticky="ns")
             self.r_frm.grid(row=0, column=2, sticky="nsew")
