@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import tkinter.messagebox as msg
 
 from frames import Explorer
 from explorer import Facade
@@ -52,16 +53,22 @@ class GUI(tk.Tk):
 
         text = f"Tab {len(self.nbook.tabs()) + 1}"
         tab = Explorer(self.nbook, view=self.view_var.get())
-        tab.l_frm.nav_bar.addr_bar.insert(0, self.fe.get_default_dir())
-        tab.r_frm.nav_bar.addr_bar.insert(0, self.fe.get_default_dir())
-        content = self.fe.get_content(self.fe.get_default_dir())
+        default_dir = self.fe.get_default_dir()
+        tab.l_frm.nav_bar.addr_bar.insert(0, default_dir)
+        tab.r_frm.nav_bar.addr_bar.insert(0, default_dir)
+        tab.l_current_dir = default_dir
+        tab.r_current_dir = default_dir
+        l_cnf = tab.l_frm.nav_bar.cnf_addr_btn
+        l_nav_bar = tab.l_frm.nav_bar.addr_bar
+        l_cnf["command"] = lambda b=l_cnf: self.display_content(b)
+        l_nav_bar.bind("<Return>", lambda a: l_cnf.invoke())
+        l_cnf.invoke()
         if self.view_var.get() == "double":
-            for row in content:
-                tab.l_frm.tree.tree.insert(parent='', index="end", values=row)
-                tab.r_frm.tree.tree.insert(parent='', index="end", values=row)
-        else:
-            for row in content:
-                tab.l_frm.tree.tree.insert(parent='', index="end", values=row)
+            r_cnf = tab.r_frm.nav_bar.cnf_addr_btn
+            r_nav_bar = tab.r_frm.nav_bar.addr_bar
+            r_cnf["command"] = lambda b=r_cnf: self.display_content(b)
+            r_nav_bar.bind("<Return>", lambda a: r_cnf.invoke())
+            r_cnf.invoke()
         self.nbook.add(tab, text=text)
 
     def close_tab(self, event=None):
@@ -71,6 +78,21 @@ class GUI(tk.Tk):
 
         if len(self.nbook.tabs()) > 1:
             self.nbook.forget(self.nbook.select())
+
+    def display_content(self, button):
+        """
+        Display directory content.
+        """
+
+        path = button.master.addr_bar.get()
+        try:
+            content = self.fe.get_content(path)
+            tree = button.master.master.tree.tree
+            tree.delete(*tree.get_children())
+            for row in content:
+                tree.insert(parent="", index="end", values=row)
+        except FileNotFoundError as e:
+            msg.showerror(title="Invalid directory", message=str(e))
 
 
 g = GUI()
