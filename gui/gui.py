@@ -55,15 +55,15 @@ class GUI(tk.Tk):
         tab = Explorer(self.nbook, view=self.view_var.get())
         default_dir = self.fe.get_default_dir()
         tab.l_frm.nav_bar.addr_bar.insert(0, default_dir)
-        tab.r_frm.nav_bar.addr_bar.insert(0, default_dir)
-        tab.l_current_dir = default_dir
-        tab.r_current_dir = default_dir
+        tab.l_frm.current_dir = default_dir
         l_cnf = tab.l_frm.nav_bar.cnf_addr_btn
         l_nav_bar = tab.l_frm.nav_bar.addr_bar
         l_cnf["command"] = lambda b=l_cnf: self.display_content(b)
         l_nav_bar.bind("<Return>", lambda a: l_cnf.invoke())
         l_cnf.invoke()
         if self.view_var.get() == "double":
+            tab.r_frm.nav_bar.addr_bar.insert(0, default_dir)
+            tab.r_frm.current_dir = default_dir
             r_cnf = tab.r_frm.nav_bar.cnf_addr_btn
             r_nav_bar = tab.r_frm.nav_bar.addr_bar
             r_cnf["command"] = lambda b=r_cnf: self.display_content(b)
@@ -82,6 +82,11 @@ class GUI(tk.Tk):
     def display_content(self, button):
         """
         Display directory content.
+
+        Parameters
+        ---------------
+        button : ttk.Button
+            button that called the method
         """
 
         path = button.master.addr_bar.get()
@@ -91,8 +96,11 @@ class GUI(tk.Tk):
             tree.delete(*tree.get_children())
             for row in content:
                 tree.insert(parent="", index="end", values=row)
+            button.master.master.current_dir = path
         except FileNotFoundError as e:
             msg.showerror(title="Invalid directory", message=str(e))
+            button.master.addr_bar.delete(0, tk.END)
+            button.master.addr_bar.insert(0, button.master.master.current_dir)
 
 
 g = GUI()
