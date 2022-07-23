@@ -56,3 +56,24 @@ class Facade:
                 row = obj.name, mt, type
                 result.append(row)
         return result
+
+    def get_parent(self, path):
+        """
+        Get path parent directory.
+
+        Parameters
+        ---------------
+        path : str
+            path to child directory
+
+        Returns
+        ---------------
+        Path
+            path obj representing parent path
+        """
+
+        path = Path(path)
+        if path.is_dir():
+            return path.parent
+        else:
+            raise FileNotFoundError("Invalid directory path")
