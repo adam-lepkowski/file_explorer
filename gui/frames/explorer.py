@@ -1,6 +1,6 @@
 from tkinter import ttk
 
-from frames import NavBar, DirContent, ObjectTransfer
+from gui.frames import NavBar, DirContent, ObjectTransfer
 
 
 class Container(ttk.Frame):

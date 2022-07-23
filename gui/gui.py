@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as msg
 
-from frames import Explorer
+from gui.frames import Explorer
 from explorer import Facade
 
 
@@ -121,7 +121,3 @@ class GUI(tk.Tk):
         button.master.addr_bar.delete(0, tk.END)
         button.master.addr_bar.insert(0, parent)
         button.master.cnf_addr_btn.invoke()
-
-
-g = GUI()
-g.mainloop()
