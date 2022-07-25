@@ -45,6 +45,8 @@ class GUI(tk.Tk):
         self.rowconfigure(0, weight=1)
         self.bind("<Control_L><w>", self.close_tab)
         self.bind("<Control_L><t>", self.add_tab)
+        self.command_menu = tk.Menu(self)
+        self.command_menu.add_command(label='copy')
 
     def add_tab(self, event=None):
         """
@@ -62,6 +64,7 @@ class GUI(tk.Tk):
         l_nav_bar.bind("<Return>", lambda event: l_cnf.invoke())
         l_parent_btn = tab.l_frm.nav_bar.parent_btn
         l_parent_btn["command"] = lambda button=l_parent_btn: self.display_parent(button)
+        tab.l_frm.tree.tree.bind('<Button-3>', self.menu_popup)
         l_cnf.invoke()
         if self.view_var.get() == "double":
             tab.r_frm.nav_bar.addr_bar.insert(0, default_dir)
@@ -72,6 +75,7 @@ class GUI(tk.Tk):
             r_nav_bar.bind("<Return>", lambda event: r_cnf.invoke())
             r_parent_btn = tab.r_frm.nav_bar.parent_btn
             r_parent_btn["command"] = lambda button=r_parent_btn: self.display_parent(button)
+            tab.r_frm.tree.tree.bind('<Button-3>', self.menu_popup)
             r_cnf.invoke()
         self.nbook.add(tab, text=text)
 
@@ -121,3 +125,13 @@ class GUI(tk.Tk):
         button.master.addr_bar.delete(0, tk.END)
         button.master.addr_bar.insert(0, parent)
         button.master.cnf_addr_btn.invoke()
+
+    def menu_popup(self, event):
+        """
+        Display popup menu containing explorer functions.
+        """
+
+        iid = event.widget.identify_row(event.y)
+        if iid:
+            event.widget.selection_set(iid)
+            self.command_menu.post(event.x_root, event.y_root)
