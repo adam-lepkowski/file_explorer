@@ -36,3 +36,21 @@ class TestGetContent(unittest.TestCase):
         ]
         result = self.facade.get_content("foo/bar")
         self.assertEqual(expected, result)
+
+
+class TestGetParent(unittest.TestCase):
+
+    def setUp(self):
+        self.facade = Facade()
+
+    @parameterized.expand([
+        ("regular_path", r"C:\Users", Path("C:/")),
+        ("root", "C:", Path("C:"))
+    ])
+    def test_get_parent(self, name, path, expected):
+        result = self.facade.get_parent(path)
+        self.assertEqual(expected, result)
+
+    def test_get_parent_raises_error(self):
+        with self.assertRaises(FileNotFoundError):
+            self.facade.get_parent("foo/bar")
