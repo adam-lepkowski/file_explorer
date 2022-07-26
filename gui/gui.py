@@ -45,6 +45,7 @@ class GUI(tk.Tk):
         self.rowconfigure(0, weight=1)
         self.bind("<Control_L><w>", self.close_tab)
         self.bind("<Control_L><t>", self.add_tab)
+        self.prev_focus = None
         self.command_menu = tk.Menu(self)
         self.command_menu.add_command(label='copy')
 
