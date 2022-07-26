@@ -135,4 +135,5 @@ class GUI(tk.Tk):
         iid = event.widget.identify_row(event.y)
         if iid:
             event.widget.selection_set(iid)
+            self.prev_focus = event.widget
             self.command_menu.post(event.x_root, event.y_root)
