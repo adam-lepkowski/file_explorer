@@ -96,3 +96,17 @@ class Facade:
             self.current_obj = path
         else:
             raise FileNotFoundError("Target does not exist")
+
+    def paste(self, dst):
+        """
+        Paste copied object.
+
+        Parameters
+        ---------------
+        dst : str
+            path to destination dir
+        """
+
+        if self.current_obj:
+            src = self.current_obj
+            self.fe.copy(src, dst)
