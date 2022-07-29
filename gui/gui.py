@@ -47,7 +47,8 @@ class GUI(tk.Tk):
         self.bind("<Control_L><t>", self.add_tab)
         self.prev_focus = None
         self.command_menu = tk.Menu(self)
-        self.command_menu.add_command(label='copy')
+        self.command_menu.add_command(label='copy', command=self.copy)
+        self.command_menu.add_command(label='paste', command=self.paste)
 
     def add_tab(self, event=None):
         """
@@ -138,3 +139,19 @@ class GUI(tk.Tk):
             event.widget.focus(item=iid)
             self.prev_focus = event.widget
             self.command_menu.post(event.x_root, event.y_root)
+
+    def copy(self):
+        """
+        Store file or dir path to be copied later.
+        """
+
+        row = self.prev_focus.item(self.prev_focus.focus())["values"]
+        name = row[0]
+        directory = self.prev_focus.master.master.nav_bar.addr_bar.get()
+        try:
+            self.fe.copy(directory, name)
+        except FileNotFoundError as e:
+            msg.showerror("Invalid destination directory", str(e))
+        explorer = self.prev_focus.master.master.master
+        explorer.l_frm.nav_bar.cnf_addr_btn.invoke()
+        explorer.r_frm.nav_bar.cnf_addr_btn.invoke()
