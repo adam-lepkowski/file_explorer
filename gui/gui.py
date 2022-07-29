@@ -112,6 +112,14 @@ class GUI(tk.Tk):
             button.master.addr_bar.delete(0, tk.END)
             button.master.addr_bar.insert(0, button.master.master.current_dir)
 
+    def refresh(self, frm):
+        """
+        Refresh frame and displayed content.
+        """
+
+        frm.l_frm.nav_bar.cnf_addr_btn.invoke()
+        frm.r_frm.nav_bar.cnf_addr_btn.invoke()
+
     def display_parent(self, button):
         """
         Display currently viewed directories parent dir.
