@@ -155,3 +155,17 @@ class GUI(tk.Tk):
         explorer = self.prev_focus.master.master.master
         explorer.l_frm.nav_bar.cnf_addr_btn.invoke()
         explorer.r_frm.nav_bar.cnf_addr_btn.invoke()
+
+    def paste(self):
+        """
+        Paste copied object and refresh displayed tab.
+        """
+
+        dst = self.prev_focus.master.master.nav_bar.addr_bar.get()
+        try:
+            self.fe.paste(dst)
+        except FileNotFoundError as e:
+            msg.showerror("Invalid destination directory", str(e))
+        explorer = self.prev_focus.master.master.master
+        explorer.l_frm.nav_bar.cnf_addr_btn.invoke()
+        explorer.r_frm.nav_bar.cnf_addr_btn.invoke()
