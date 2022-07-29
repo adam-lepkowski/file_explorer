@@ -67,7 +67,6 @@ class GUI(tk.Tk):
         l_parent_btn = tab.l_frm.nav_bar.parent_btn
         l_parent_btn["command"] = lambda button=l_parent_btn: self.display_parent(button)
         tab.l_frm.tree.tree.bind('<Button-3>', self.menu_popup)
-        l_cnf.invoke()
         if self.view_var.get() == "double":
             tab.r_frm.nav_bar.addr_bar.insert(0, default_dir)
             tab.r_frm.current_dir = default_dir
@@ -78,7 +77,7 @@ class GUI(tk.Tk):
             r_parent_btn = tab.r_frm.nav_bar.parent_btn
             r_parent_btn["command"] = lambda button=r_parent_btn: self.display_parent(button)
             tab.r_frm.tree.tree.bind('<Button-3>', self.menu_popup)
-            r_cnf.invoke()
+        self.refresh(tab)
         self.nbook.add(tab, text=text)
 
     def close_tab(self, event=None):
