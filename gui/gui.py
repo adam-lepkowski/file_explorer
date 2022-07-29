@@ -161,8 +161,7 @@ class GUI(tk.Tk):
         except FileNotFoundError as e:
             msg.showerror("Invalid destination directory", str(e))
         explorer = self.prev_focus.master.master.master
-        explorer.l_frm.nav_bar.cnf_addr_btn.invoke()
-        explorer.r_frm.nav_bar.cnf_addr_btn.invoke()
+        self.refresh(explorer)
 
     def paste(self):
         """
@@ -175,5 +174,4 @@ class GUI(tk.Tk):
         except FileNotFoundError as e:
             msg.showerror("Invalid destination directory", str(e))
         explorer = self.prev_focus.master.master.master
-        explorer.l_frm.nav_bar.cnf_addr_btn.invoke()
-        explorer.r_frm.nav_bar.cnf_addr_btn.invoke()
+        self.refresh(explorer)
