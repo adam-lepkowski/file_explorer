@@ -147,7 +147,7 @@ class GUI(tk.Tk):
 
         row = self.prev_focus.item(self.prev_focus.focus())["values"]
         name = row[0]
-        directory = self.prev_focus.master.master.nav_bar.addr_bar.get()
+        directory = self.prev_focus.master.master.current_dir
         try:
             self.fe.copy(directory, name)
         except FileNotFoundError as e:
@@ -161,7 +161,7 @@ class GUI(tk.Tk):
         Paste copied object and refresh displayed tab.
         """
 
-        dst = self.prev_focus.master.master.nav_bar.addr_bar.get()
+        dst = self.prev_focus.master.master.current_dir
         try:
             self.fe.paste(dst)
         except FileNotFoundError as e:
