@@ -62,7 +62,7 @@ class TestCopy(unittest.TestCase):
         self.facade = Facade()
 
     @patch("explorer.facade.Path.exists", return_value=True)
-    def test_copy(self, mock_exists):
+    def test_copy(self, exists_mock):
         directory = "foo"
         name = "bar.py"
         self.facade.copy(directory, name)
@@ -73,3 +73,20 @@ class TestCopy(unittest.TestCase):
     def test_copy_raises(self):
         with self.assertRaises(FileNotFoundError):
             self.facade.copy("foo", "bar.py")
+
+
+class TestPaste(unittest.TestCase):
+
+    def setUp(self):
+        self.facade = Facade()
+
+    @patch("explorer.facade.FileExplorer.copy")
+    def test_paste_with_current_obj(self, copy_mock):
+        self.facade.current_obj = "src/foo/bar"
+        self.facade.paste("dst/foo/bar")
+        copy_mock.assert_called_with("src/foo/bar", "dst/foo/bar")
+
+    @patch("explorer.facade.FileExplorer.copy")
+    def test_paste_no_current_obj(self, copy_mock):
+        self.facade.paste("dst/foo/bar")
+        copy_mock.assert_not_called()
