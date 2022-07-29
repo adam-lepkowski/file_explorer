@@ -18,6 +18,7 @@ class Facade:
     def __init__(self):
         self.fe = FileExplorer()
         self.cache = Cache()
+        self.current_obj = None
 
     def get_default_dir(self):
         """
@@ -77,3 +78,21 @@ class Facade:
             return path.parent
         else:
             raise FileNotFoundError("Invalid directory path")
+
+    def copy(self, directory, name):
+        """
+        Store obj path for later use.
+
+        Parameters
+        ---------------
+        directory : str
+            absolute path to file or dir stored for copy
+        name : str
+            file or dir name
+        """
+
+        path = Path(directory) / name
+        if path.exists():
+            self.current_obj = path
+        else:
+            raise FileNotFoundError("Target does not exist")
