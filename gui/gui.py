@@ -17,6 +17,10 @@ class GUI(tk.Tk):
         represent Explorer frames in a tabbed view
     menubar : tk.Menu
         menu bar holding view options and methods
+    fe : Facade
+        core file manipulation, display and cache functionality
+    prev_focus : tk.Widget or None
+        display container that had focus before the one currently focused
     """
 
     def __init__(self):
