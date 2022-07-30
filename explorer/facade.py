@@ -46,6 +46,11 @@ class Facade:
         ---------------
         list
             list of tuples with filename, modification datetime and obj type
+
+        Raises
+        ---------------
+        FileNotFoundError
+            If path is not a directory
         """
 
         content = self.fe.get_content(path)
@@ -71,6 +76,11 @@ class Facade:
         ---------------
         Path
             path obj representing parent path
+
+        Raises
+        ---------------
+        FileNotFoundError
+            If path is not a directory
         """
 
         path = Path(path)
@@ -89,6 +99,11 @@ class Facade:
             absolute path to file or dir stored for copy
         name : str
             file or dir name
+
+        Raises
+        ---------------
+        FileNotFoundError
+            If path is not a directory
         """
 
         path = Path(directory) / name
