@@ -66,20 +66,20 @@ class GUI(tk.Tk):
         tab.l_frm.current_dir = default_dir
         l_cnf = tab.l_frm.nav_bar.cnf_addr_btn
         l_nav_bar = tab.l_frm.nav_bar.addr_bar
-        l_cnf["command"] = lambda button=l_cnf: self.display_content(button)
+        l_cnf["command"] = lambda: self.display_content(l_cnf)
         l_nav_bar.bind("<Return>", lambda event: l_cnf.invoke())
         l_parent_btn = tab.l_frm.nav_bar.parent_btn
-        l_parent_btn["command"] = lambda button=l_parent_btn: self.display_parent(button)
+        l_parent_btn["command"] = lambda: self.display_parent(l_parent_btn)
         tab.l_frm.tree.tree.bind('<Button-3>', self.menu_popup)
         if self.view_var.get() == "double":
             tab.r_frm.nav_bar.addr_var.set(default_dir)
             tab.r_frm.current_dir = default_dir
             r_cnf = tab.r_frm.nav_bar.cnf_addr_btn
             r_nav_bar = tab.r_frm.nav_bar.addr_bar
-            r_cnf["command"] = lambda button=r_cnf: self.display_content(button)
+            r_cnf["command"] = lambda: self.display_content(r_cnf)
             r_nav_bar.bind("<Return>", lambda event: r_cnf.invoke())
             r_parent_btn = tab.r_frm.nav_bar.parent_btn
-            r_parent_btn["command"] = lambda button=r_parent_btn: self.display_parent(button)
+            r_parent_btn["command"] = lambda: self.display_parent(r_parent_btn)
             tab.r_frm.tree.tree.bind('<Button-3>', self.menu_popup)
         self.refresh(tab)
         self.nbook.add(tab, text=text)
