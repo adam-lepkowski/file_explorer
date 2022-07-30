@@ -29,7 +29,6 @@ class NavBar(ttk.Frame):
         self.parent_btn = ttk.Button(self, style="ExpBar.TButton", text="^")
         self.parent_btn.grid(row=0, column=0, sticky="we")
         self.addr_var = tk.StringVar(self)
-        # add validatecommand option to entry initialization - validate on focusout
         self.addr_bar = ttk.Entry(self, textvariable=self.addr_var)
         self.addr_bar.grid(row=0, column=1, sticky="we")
         self.cnf_addr_btn = ttk.Button(self, style="ExpBar.TButton", text=">")

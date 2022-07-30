@@ -70,6 +70,11 @@ class GUI(tk.Tk):
         l_nav_bar.bind("<Return>", lambda event: l_cnf.invoke())
         l_parent_btn = tab.l_frm.nav_bar.parent_btn
         l_parent_btn["command"] = lambda: self.display_parent(l_parent_btn)
+        vcmd = (self.register(self.fe.is_valid_path), "%P")
+        ivcmd = (self.register(self.invalid_addr), "%W")
+        l_nav_bar.configure(
+            validate="focusout", validatecommand=vcmd, invalidcommand=ivcmd
+        )
         tab.l_frm.tree.tree.bind('<Button-3>', self.menu_popup)
         if self.view_var.get() == "double":
             tab.r_frm.nav_bar.addr_var.set(default_dir)
@@ -80,6 +85,9 @@ class GUI(tk.Tk):
             r_nav_bar.bind("<Return>", lambda event: r_cnf.invoke())
             r_parent_btn = tab.r_frm.nav_bar.parent_btn
             r_parent_btn["command"] = lambda: self.display_parent(r_parent_btn)
+            r_nav_bar.configure(
+                validate="focusout", validatecommand=vcmd, invalidcommand=ivcmd
+            )
             tab.r_frm.tree.tree.bind('<Button-3>', self.menu_popup)
         self.refresh(tab)
         self.nbook.add(tab, text=text)
@@ -176,3 +184,12 @@ class GUI(tk.Tk):
             msg.showerror("Invalid destination directory", str(e))
         explorer = self.prev_focus.master.master.master
         self.refresh(explorer)
+
+    def invalid_addr(self, widget):
+        """
+        Restore last correct dir path to address bar.
+        """
+
+        widget = self.nametowidget(widget)
+        current_dir = widget.master.master.current_dir
+        widget.master.addr_var.set(current_dir)
