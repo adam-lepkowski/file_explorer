@@ -62,7 +62,7 @@ class GUI(tk.Tk):
         text = f"Tab {len(self.nbook.tabs()) + 1}"
         tab = Explorer(self.nbook, view=self.view_var.get())
         default_dir = self.fe.get_default_dir()
-        tab.l_frm.nav_bar.addr_bar.insert(0, default_dir)
+        tab.l_frm.nav_bar.addr_var.set(default_dir)
         tab.l_frm.current_dir = default_dir
         l_cnf = tab.l_frm.nav_bar.cnf_addr_btn
         l_nav_bar = tab.l_frm.nav_bar.addr_bar
@@ -72,7 +72,7 @@ class GUI(tk.Tk):
         l_parent_btn["command"] = lambda button=l_parent_btn: self.display_parent(button)
         tab.l_frm.tree.tree.bind('<Button-3>', self.menu_popup)
         if self.view_var.get() == "double":
-            tab.r_frm.nav_bar.addr_bar.insert(0, default_dir)
+            tab.r_frm.nav_bar.addr_var.set(default_dir)
             tab.r_frm.current_dir = default_dir
             r_cnf = tab.r_frm.nav_bar.cnf_addr_btn
             r_nav_bar = tab.r_frm.nav_bar.addr_bar
@@ -102,7 +102,7 @@ class GUI(tk.Tk):
             button that called the method
         """
 
-        path = button.master.addr_bar.get()
+        path = button.master.addr_var.get()
         try:
             content = self.fe.get_content(path)
             tree = button.master.master.tree.tree
@@ -112,8 +112,7 @@ class GUI(tk.Tk):
             button.master.master.current_dir = path
         except FileNotFoundError as e:
             msg.showerror(title="Invalid directory", message=str(e))
-            button.master.addr_bar.delete(0, tk.END)
-            button.master.addr_bar.insert(0, button.master.master.current_dir)
+            button.master.addr_var.set(button.master.master.current_dir)
 
     def refresh(self, frm):
         """
@@ -135,8 +134,7 @@ class GUI(tk.Tk):
 
         path = button.master.master.current_dir
         parent = self.fe.get_parent(path)
-        button.master.addr_bar.delete(0, tk.END)
-        button.master.addr_bar.insert(0, parent)
+        button.master.addr_var.set(parent)
         button.master.cnf_addr_btn.invoke()
 
     def menu_popup(self, event):
