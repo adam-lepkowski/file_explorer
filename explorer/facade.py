@@ -127,3 +127,6 @@ class Facade:
         if self.current_obj:
             src = self.current_obj
             self.fe.copy(src, dst)
+
+    def is_valid_path(self, path):
+        return Path(path).is_dir()
