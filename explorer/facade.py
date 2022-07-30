@@ -13,6 +13,8 @@ class Facade:
     ---------------
     fe : FileExplorer
     cache : Cache
+    current_obj : None or Path
+        path to a source object for later use (move, copy)
     """
 
     def __init__(self):
