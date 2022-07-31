@@ -133,3 +133,22 @@ class Facade:
             self.current_obj = {"src": path, "func": mode}
         else:
             raise FileNotFoundError("Target does not exist")
+
+    def transfer(self, src, name, dst, mode):
+        """
+        Transfer (copy/move) an object from src to dst.
+
+        Parameters
+        ---------------
+        src : str
+            path to source dir
+        name : str
+            name of file/directory to be transfered
+        dst : str
+            path to destination dir
+        mode : {move, copy}
+            file operation intended for src file
+        """
+
+        src = Path(src) / name
+        getattr(self.fe, mode)(src, dst)
