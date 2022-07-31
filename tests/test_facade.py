@@ -90,3 +90,25 @@ class TestPaste(unittest.TestCase):
     def test_paste_no_current_obj(self, copy_mock):
         self.facade.paste("dst/foo/bar")
         copy_mock.assert_not_called()
+
+
+class TesStoreSrc(unittest.TestCase):
+
+    def setUp(self):
+        self.facade = Facade()
+
+    @patch("explorer.facade.Path.exists", return_value=True)
+    def test_copy(self, exists_mock):
+        directory = "foo"
+        name = "bar.py"
+        self.facade.store_src(directory, name, "copy")
+        result = self.facade.current_obj
+        expected = {
+            "src": Path("foo/bar.py"),
+            "func": "copy"
+        }
+        self.assertEqual(expected, result)
+
+    def test_copy_raises(self):
+        with self.assertRaises(FileNotFoundError):
+            self.facade.store_src("foo", "bar.py", "copy")
