@@ -56,25 +56,6 @@ class TestGetParent(unittest.TestCase):
             self.facade.get_parent("foo/bar")
 
 
-class TestCopy(unittest.TestCase):
-
-    def setUp(self):
-        self.facade = Facade()
-
-    @patch("explorer.facade.Path.exists", return_value=True)
-    def test_copy(self, exists_mock):
-        directory = "foo"
-        name = "bar.py"
-        self.facade.copy(directory, name)
-        result = self.facade.current_obj
-        expected = Path("foo/bar.py")
-        self.assertEqual(expected, result)
-
-    def test_copy_raises(self):
-        with self.assertRaises(FileNotFoundError):
-            self.facade.copy("foo", "bar.py")
-
-
 class TestPaste(unittest.TestCase):
 
     def setUp(self):
