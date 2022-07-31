@@ -152,3 +152,15 @@ class Facade:
 
         src = Path(src) / name
         getattr(self.fe, mode)(src, dst)
+
+    def rename(self, directory, name, new_name):
+        """
+        Rename a file or directory.
+        """
+
+        src = Path(directory) / name
+        if src.exists():
+            dst = Path(directory) / new_name
+            self.fe.rename(src, dst)
+        else:
+            raise FileNotFoundError("Invalid source directory path")
