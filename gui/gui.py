@@ -82,6 +82,10 @@ class GUI(tk.Tk):
         )
         tab.l_frm.tree.tree.bind('<Button-3>', self.menu_popup)
         if self.view_var.get() == "double":
+            tab.transfer_bar.copy_right_btn["command"] = lambda: self.transfer("right", "copy")
+            tab.transfer_bar.copy_left_btn["command"] = lambda: self.transfer("left", "copy")
+            tab.transfer_bar.move_right_btn["command"] = lambda: self.transfer("right", "move")
+            tab.transfer_bar.move_left_btn["command"] = lambda: self.transfer("left", "move")
             tab.r_frm.nav_bar.addr_var.set(default_dir)
             tab.r_frm.current_dir = default_dir
             r_cnf = tab.r_frm.nav_bar.cnf_addr_btn
@@ -203,3 +207,28 @@ class GUI(tk.Tk):
             msg.showerror("Invalid destination directory", str(e))
         explorer = self.prev_focus.master.master.master
         self.refresh(explorer)
+
+    def transfer(self, direction, mode):
+        """
+        Transfer files and directories between two open explorer frames.
+
+        Parameters
+        ---------------
+        direction : {left, right}
+            left -> transfer object from right to left
+            right -> left to right
+        mode : {move, copy}
+            file operation intended for src file
+        """
+
+        widget = self.nametowidget(self.nbook.select())
+        l_addr = widget.l_frm.nav_bar.addr_var.get()
+        r_addr = widget.r_frm.nav_bar.addr_var.get()
+        tree = widget.l_frm.tree.tree if direction == "right" else widget.r_frm.tree.tree
+        src = l_addr if direction == "right" else r_addr
+        dst = r_addr if direction == "right" else l_addr
+        row = tree.item(tree.focus())["values"]
+        if row:
+            name = row[0]
+            self.fe.transfer(src, name, dst, mode)
+        self.refresh(widget)
