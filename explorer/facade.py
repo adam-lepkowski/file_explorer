@@ -13,8 +13,9 @@ class Facade:
     ---------------
     fe : FileExplorer
     cache : Cache
-    current_obj : None or Path
-        path to a source object for later use (move, copy)
+    current_obj : None or dict
+        path: path to a source object for later use
+        mode: move or copy
     """
 
     def __init__(self):
@@ -130,3 +131,28 @@ class Facade:
 
     def is_valid_path(self, path):
         return Path(path).is_dir()
+
+    def store_src(self, directory, name, mode):
+        """
+        Store obj path for later use.
+
+        Parameters
+        ---------------
+        directory : str
+            absolute path to file or dir stored for copy
+        name : str
+            file or dir name
+        mode : {move, copy}
+            file operation intended for src file
+
+        Raises
+        ---------------
+        FileNotFoundError
+            If path is not a directory
+        """
+
+        path = Path(directory) / name
+        if path.exists():
+            self.current_obj = {"src": path, "func": mode}
+        else:
+            raise FileNotFoundError("Target does not exist")
