@@ -82,7 +82,10 @@ class TestPaste(unittest.TestCase):
 
     @patch("explorer.facade.FileExplorer.copy")
     def test_paste_with_current_obj(self, copy_mock):
-        self.facade.current_obj = "src/foo/bar"
+        self.facade.current_obj = {
+            "src": "src/foo/bar",
+            "func": "copy"
+        }
         self.facade.paste("dst/foo/bar")
         copy_mock.assert_called_with("src/foo/bar", "dst/foo/bar")
 
