@@ -238,9 +238,32 @@ class GUI(tk.Tk):
         """
         Display an entry to rename object.
         """
-        
+
         x, y, w, h = self.prev_focus.bbox(self.prev_focus.focus(), column="Name")
         entry = ttk.Entry(self.prev_focus)
         entry.place(x=x, y=y, width=w, height=h)
         entry.focus()
         entry.bind("<FocusOut>", lambda e: entry.destroy())
+        entry.bind("<Return>", lambda e: self.rename(entry))
+
+    def rename(self, entry):
+        """
+        Rename an object.
+
+        Parameters
+        ---------------
+        entry : ttk.Entry
+            entry created by rename_popup containing w new file/dir name
+        """
+
+        new_name = entry.get()
+        row = self.prev_focus.item(self.prev_focus.focus())["values"]
+        name = row[0]
+        directory = self.prev_focus.master.master.current_dir
+        try:
+            self.fe.rename(directory, name, new_name)
+        except FileExistsError as e:
+            msg.showerror(f"File {new_name} already exists", str(e))
+        finally:
+            entry.destroy()
+            self.refresh(self.prev_focus.master.master.master)
