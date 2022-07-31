@@ -51,7 +51,12 @@ class GUI(tk.Tk):
         self.bind("<Control_L><t>", self.add_tab)
         self.prev_focus = None
         self.command_menu = tk.Menu(self)
-        self.command_menu.add_command(label='copy', command=self.copy)
+        self.command_menu.add_command(
+            label='copy', command=lambda: self.store_src("copy")
+        )
+        self.command_menu.add_command(
+            label='cut', command=lambda: self.store_src("move")
+        )
         self.command_menu.add_command(label='paste', command=self.paste)
 
     def add_tab(self, event=None):
@@ -193,3 +198,23 @@ class GUI(tk.Tk):
         widget = self.nametowidget(widget)
         current_dir = widget.master.master.current_dir
         widget.master.addr_var.set(current_dir)
+
+    def store_src(self, mode):
+        """
+        Store file or dir path to copy/move it later.
+
+        Parameters
+        ---------------
+        mode : {move, copy}
+            file operation intended for src file
+        """
+
+        row = self.prev_focus.item(self.prev_focus.focus())["values"]
+        name = row[0]
+        directory = self.prev_focus.master.master.current_dir
+        try:
+            self.fe.store_src(directory, name, mode)
+        except FileNotFoundError as e:
+            msg.showerror("Invalid destination directory", str(e))
+        explorer = self.prev_focus.master.master.master
+        self.refresh(explorer)
