@@ -96,3 +96,22 @@ class TesStoreSrc(unittest.TestCase):
     def test_copy_raises(self):
         with self.assertRaises(FileNotFoundError):
             self.facade.store_src("foo", "bar.py", "copy")
+
+
+class TestTransfer(unittest.TestCase):
+
+    def setUp(self):
+        self.facade = Facade()
+        self.src = "src/foo"
+        self.name = "bar.py"
+        self.dst = "dst/foo/bar"
+
+    @patch("explorer.facade.FileExplorer.copy")
+    def test_transfer_copy(self, copy_mock):
+        self.facade.transfer(self.src, self.name, self.dst, "copy")
+        copy_mock.assert_called_with(Path("src/foo/bar.py"), "dst/foo/bar")
+
+    @patch("explorer.facade.FileExplorer.move")
+    def test_transfer_copy(self, move_mock):
+        self.facade.transfer(self.src, self.name, self.dst, "move")
+        move_mock.assert_called_with(Path("src/foo/bar.py"), "dst/foo/bar")
