@@ -115,3 +115,19 @@ class TestTransfer(unittest.TestCase):
     def test_transfer_copy(self, move_mock):
         self.facade.transfer(self.src, self.name, self.dst, "move")
         move_mock.assert_called_with(Path("src/foo/bar.py"), "dst/foo/bar")
+
+
+class TestRename(unittest.TestCase):
+
+    def setUp(self):
+        self.facade = Facade()
+        self.src = "src/foo"
+        self.name = "bar.py"
+
+    @patch("explorer.facade.Path.exists", return_value=True)
+    @patch("explorer.facade.FileExplorer.rename")
+    def test_transfer_copy(self, rename_mock, exists_mock):
+        src = Path(self.src) / self.name
+        dst = Path(self.src) / "foo_bar"
+        self.facade.rename(self.src, self.name, "foo_bar")
+        rename_mock.assert_called_with(src, dst)
