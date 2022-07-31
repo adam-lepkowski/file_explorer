@@ -58,6 +58,7 @@ class GUI(tk.Tk):
             label='cut', command=lambda: self.store_src("move")
         )
         self.command_menu.add_command(label='paste', command=self.paste)
+        self.command_menu.add_command(label='rename', command=self.rename_popup)
 
     def add_tab(self, event=None):
         """
@@ -232,3 +233,14 @@ class GUI(tk.Tk):
             name = row[0]
             self.fe.transfer(src, name, dst, mode)
         self.refresh(widget)
+
+    def rename_popup(self):
+        """
+        Display an entry to rename object.
+        """
+        
+        x, y, w, h = self.prev_focus.bbox(self.prev_focus.focus(), column="Name")
+        entry = ttk.Entry(self.prev_focus)
+        entry.place(x=x, y=y, width=w, height=h)
+        entry.focus()
+        entry.bind("<FocusOut>", lambda e: entry.destroy())
