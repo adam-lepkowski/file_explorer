@@ -92,29 +92,6 @@ class Facade:
         else:
             raise FileNotFoundError("Invalid directory path")
 
-    def copy(self, directory, name):
-        """
-        Store obj path for later use.
-
-        Parameters
-        ---------------
-        directory : str
-            absolute path to file or dir stored for copy
-        name : str
-            file or dir name
-
-        Raises
-        ---------------
-        FileNotFoundError
-            If path is not a directory
-        """
-
-        path = Path(directory) / name
-        if path.exists():
-            self.current_obj = path
-        else:
-            raise FileNotFoundError("Target does not exist")
-
     def paste(self, dst):
         """
         Paste copied object.
