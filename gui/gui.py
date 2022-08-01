@@ -59,6 +59,7 @@ class GUI(tk.Tk):
         )
         self.command_menu.add_command(label='paste', command=self.paste)
         self.command_menu.add_command(label='rename', command=self.rename_popup)
+        self.command_menu.add_command(label="delete", command=self.delete)
 
     def add_tab(self, event=None):
         """
@@ -267,3 +268,16 @@ class GUI(tk.Tk):
         finally:
             entry.destroy()
             self.refresh(self.prev_focus.master.master.master)
+
+    def delete(self):
+        """
+        Permanently delete a file or directory.
+        """
+
+        row = self.prev_focus.item(self.prev_focus.focus())["values"]
+        name = row[0]
+        message = f"Do you really want to delete {name}? This operation can't be undone"
+        if msg.askyesno(title="Delete file", message=message):
+            directory = self.prev_focus.master.master.current_dir
+            self.fe.delete(directory, name)
+        self.refresh(self.prev_focus.master.master.master)
