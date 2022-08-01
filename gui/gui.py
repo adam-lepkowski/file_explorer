@@ -100,8 +100,8 @@ class GUI(tk.Tk):
                 validate="focusout", validatecommand=vcmd, invalidcommand=ivcmd
             )
             tab.r_frm.tree.tree.bind('<Button-3>', self.menu_popup)
-        self.refresh(tab)
         self.nbook.add(tab, text=text)
+        self.refresh()
 
     def close_tab(self, event=None):
         """
@@ -133,11 +133,11 @@ class GUI(tk.Tk):
             msg.showerror(title="Invalid directory", message=str(e))
             button.master.addr_var.set(button.master.master.current_dir)
 
-    def refresh(self, frm):
+    def refresh(self):
         """
         Refresh frame and displayed content.
         """
-
+        frm = self.nametowidget(self.nbook.select())
         frm.l_frm.nav_bar.cnf_addr_btn.invoke()
         frm.r_frm.nav_bar.cnf_addr_btn.invoke()
 
@@ -179,7 +179,7 @@ class GUI(tk.Tk):
         except FileNotFoundError as e:
             msg.showerror("Invalid destination directory", str(e))
         explorer = self.prev_focus.master.master.master
-        self.refresh(explorer)
+        self.refresh()
 
     def invalid_addr(self, widget):
         """
@@ -208,7 +208,7 @@ class GUI(tk.Tk):
         except FileNotFoundError as e:
             msg.showerror("Invalid destination directory", str(e))
         explorer = self.prev_focus.master.master.master
-        self.refresh(explorer)
+        self.refresh()
 
     def transfer(self, direction, mode):
         """
@@ -233,7 +233,7 @@ class GUI(tk.Tk):
         if row:
             name = row[0]
             self.fe.transfer(src, name, dst, mode)
-        self.refresh(widget)
+        self.refresh()
 
     def rename_popup(self):
         """
@@ -267,7 +267,7 @@ class GUI(tk.Tk):
             msg.showerror(f"File {new_name} already exists", str(e))
         finally:
             entry.destroy()
-            self.refresh(self.prev_focus.master.master.master)
+            self.refresh()
 
     def delete(self):
         """
@@ -280,4 +280,4 @@ class GUI(tk.Tk):
         if msg.askyesno(title="Delete file", message=message):
             directory = self.prev_focus.master.master.current_dir
             self.fe.delete(directory, name)
-        self.refresh(self.prev_focus.master.master.master)
+        self.refresh()
