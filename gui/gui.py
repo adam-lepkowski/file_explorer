@@ -200,9 +200,7 @@ class GUI(tk.Tk):
             file operation intended for src file
         """
 
-        row = self.prev_focus.item(self.prev_focus.focus())["values"]
-        name = row[0]
-        directory = self.prev_focus.master.master.current_dir
+        directory, name = self.get_path()
         try:
             self.fe.store_src(directory, name, mode)
         except FileNotFoundError as e:
@@ -258,9 +256,7 @@ class GUI(tk.Tk):
         """
 
         new_name = entry.get()
-        row = self.prev_focus.item(self.prev_focus.focus())["values"]
-        name = row[0]
-        directory = self.prev_focus.master.master.current_dir
+        directory, name = self.get_path()
         try:
             self.fe.rename(directory, name, new_name)
         except FileExistsError as e:
@@ -274,10 +270,23 @@ class GUI(tk.Tk):
         Permanently delete a file or directory.
         """
 
-        row = self.prev_focus.item(self.prev_focus.focus())["values"]
-        name = row[0]
+        directory, name = self.get_path()
         message = f"Do you really want to delete {name}? This operation can't be undone"
         if msg.askyesno(title="Delete file", message=message):
-            directory = self.prev_focus.master.master.current_dir
             self.fe.delete(directory, name)
         self.refresh()
+
+    def get_path(self):
+        """
+        Get selected object name and parent dir path.
+
+        Returns
+        ---------------
+        tuple
+            directory path and object name
+        """
+
+        row = self.prev_focus.item(self.prev_focus.focus())["values"]
+        name = row[0]
+        directory = self.prev_focus.master.master.current_dir
+        return (directory, name)
