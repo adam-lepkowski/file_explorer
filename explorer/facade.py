@@ -173,3 +173,19 @@ class Facade:
             self.fe.rename(src, dst)
         else:
             raise FileNotFoundError("Invalid source directory path")
+
+    def delete(self, directory, name):
+        """
+        Permanently delete a file or directory.
+
+        Parameters
+        ---------------
+        directory : str
+            path to source dir
+        name : str
+            name of file/directory to be deleted
+        """
+
+        target = Path(directory) / str(name)
+        if target.exists():
+            self.fe.rm(target)
