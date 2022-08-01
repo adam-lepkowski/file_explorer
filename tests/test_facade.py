@@ -131,3 +131,17 @@ class TestRename(unittest.TestCase):
         dst = Path(self.src) / "foo_bar"
         self.facade.rename(self.src, self.name, "foo_bar")
         rename_mock.assert_called_with(src, dst)
+
+
+class TestDelete(unittest.TestCase):
+
+    def setUp(self):
+        self.facade = Facade()
+        self.src = "src/foo"
+        self.name = "bar.py"
+
+    @patch("explorer.facade.Path.exists", return_value=True)
+    @patch("explorer.facade.FileExplorer.rm")
+    def test_delete(self, rm_mock, exists_mock):
+        self.facade.delete(self.src, self.name)
+        rm_mock.assert_called_with(Path(self.src) / self.name)
