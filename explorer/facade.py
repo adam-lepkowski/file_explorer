@@ -150,17 +150,26 @@ class Facade:
             file operation intended for src file
         """
 
-        src = Path(src) / name
+        src = Path(src) / str(name)
         getattr(self.fe, mode)(src, dst)
 
     def rename(self, directory, name, new_name):
         """
         Rename a file or directory.
+
+        Parameters
+        ---------------
+        directory : str
+            path to source dir
+        name : str
+            name of file/directory to be renamed
+        new_name : str
+            new name for file or directory. File should not contain extension
         """
 
-        src = Path(directory) / name
+        src = Path(directory) / str(name)
         if src.exists():
-            dst = Path(directory) / new_name
+            dst = Path(directory) / str(new_name)
             self.fe.rename(src, dst)
         else:
             raise FileNotFoundError("Invalid source directory path")
