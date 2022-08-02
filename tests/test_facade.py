@@ -75,6 +75,22 @@ class TestPaste(unittest.TestCase):
         self.facade.paste("dst/foo/bar")
         copy_mock.assert_not_called()
 
+    @patch("explorer.facade.FileExplorer.copy", return_value="dst/foo/bar/bar")
+    def test_paste_cache_item(self, copy_mock):
+        self.facade.current_obj = {
+            "src": "src/foo/bar",
+            "func": "copy"
+        }
+        self.facade.paste("dst/foo/bar")
+        expected = {
+            "src": "src/foo/bar",
+            "func": "copy",
+            "dst": "dst/foo/bar",
+            "new_obj": "dst/foo/bar/bar"
+        }
+        result = self.facade.cache.items[0]
+        self.assertEqual(expected, result)
+
 
 class TesStoreSrc(unittest.TestCase):
 
