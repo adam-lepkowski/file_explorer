@@ -92,7 +92,7 @@ class TestPaste(unittest.TestCase):
         self.assertEqual(expected, result)
 
 
-class TesStoreSrc(unittest.TestCase):
+class TestStoreSrc(unittest.TestCase):
 
     def setUp(self):
         self.facade = Facade()
