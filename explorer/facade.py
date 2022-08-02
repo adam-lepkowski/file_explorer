@@ -128,7 +128,7 @@ class Facade:
             If path is not a directory
         """
 
-        path = Path(directory) / name
+        path = Path(directory) / str(name)
         if path.exists():
             self.current_obj = {"src": path, "func": mode}
         else:
