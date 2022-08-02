@@ -108,7 +108,7 @@ class Facade:
             item = {
                 "src": src,
                 "func": self.current_obj["func"],
-                "dst": dst,
+                "dst": Path(dst),
                 "new_obj": new_obj
             }
             self.cache.store(item)

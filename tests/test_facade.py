@@ -85,7 +85,7 @@ class TestPaste(unittest.TestCase):
         expected = {
             "src": "src/foo/bar",
             "func": "copy",
-            "dst": "dst/foo/bar",
+            "dst": Path("dst/foo/bar"),
             "new_obj": "dst/foo/bar/bar"
         }
         result = self.facade.cache.items[0]
