@@ -94,7 +94,7 @@ class Facade:
 
     def paste(self, dst):
         """
-        Paste copied object.
+        Paste copied object and cache action.
 
         Parameters
         ---------------
@@ -104,7 +104,14 @@ class Facade:
 
         if self.current_obj:
             src = self.current_obj["src"]
-            getattr(self.fe, self.current_obj["func"])(src, dst)
+            new_obj = getattr(self.fe, self.current_obj["func"])(src, dst)
+            item = {
+                "src": src,
+                "func": self.current_obj["func"],
+                "dst": dst,
+                "new_obj": new_obj
+            }
+            self.cache.store(item)
 
     def is_valid_path(self, path):
         return Path(path).is_dir()
