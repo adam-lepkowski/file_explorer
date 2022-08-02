@@ -158,7 +158,14 @@ class Facade:
         """
 
         src = Path(src) / str(name)
-        getattr(self.fe, func)(src, dst)
+        new_obj = getattr(self.fe, func)(src, dst)
+        item = {
+            "src": src,
+            "func": func,
+            "dst": Path(dst),
+            "new_obj": new_obj
+        }
+        self.cache.store(item)
 
     def rename(self, directory, name, new_name):
         """
