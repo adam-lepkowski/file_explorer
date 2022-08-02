@@ -190,25 +190,25 @@ class GUI(tk.Tk):
         current_dir = widget.master.master.current_dir
         widget.master.addr_var.set(current_dir)
 
-    def store_src(self, mode):
+    def store_src(self, func):
         """
         Store file or dir path to copy/move it later.
 
         Parameters
         ---------------
-        mode : {move, copy}
+        func : {move, copy}
             file operation intended for src file
         """
 
         directory, name = self.get_path()
         try:
-            self.fe.store_src(directory, name, mode)
+            self.fe.store_src(directory, name, func)
         except FileNotFoundError as e:
             msg.showerror("Invalid destination directory", str(e))
         explorer = self.prev_focus.master.master.master
         self.refresh()
 
-    def transfer(self, direction, mode):
+    def transfer(self, direction, func):
         """
         Transfer files and directories between two open explorer frames.
 
@@ -217,7 +217,7 @@ class GUI(tk.Tk):
         direction : {left, right}
             left -> transfer object from right to left
             right -> left to right
-        mode : {move, copy}
+        func : {move, copy}
             file operation intended for src file
         """
 
@@ -230,7 +230,7 @@ class GUI(tk.Tk):
         row = tree.item(tree.focus())["values"]
         if row:
             name = row[0]
-            self.fe.transfer(src, name, dst, mode)
+            self.fe.transfer(src, name, dst, func)
         self.refresh()
 
     def rename_popup(self):

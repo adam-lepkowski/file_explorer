@@ -15,7 +15,7 @@ class Facade:
     cache : Cache
     current_obj : None or dict
         path: path to a source object for later use
-        mode: move or copy
+        func: move or copy
     """
 
     def __init__(self):
@@ -116,7 +116,7 @@ class Facade:
     def is_valid_path(self, path):
         return Path(path).is_dir()
 
-    def store_src(self, directory, name, mode):
+    def store_src(self, directory, name, func):
         """
         Store obj path for later use.
 
@@ -126,7 +126,7 @@ class Facade:
             absolute path to file or dir stored for copy
         name : str
             file or dir name
-        mode : {move, copy}
+        func : {move, copy}
             file operation intended for src file
 
         Raises
@@ -137,11 +137,11 @@ class Facade:
 
         path = Path(directory) / str(name)
         if path.exists():
-            self.current_obj = {"src": path, "func": mode}
+            self.current_obj = {"src": path, "func": func}
         else:
             raise FileNotFoundError("Target does not exist")
 
-    def transfer(self, src, name, dst, mode):
+    def transfer(self, src, name, dst, func):
         """
         Transfer (copy/move) an object from src to dst.
 
@@ -153,12 +153,12 @@ class Facade:
             name of file/directory to be transfered
         dst : str
             path to destination dir
-        mode : {move, copy}
+        func : {move, copy}
             file operation intended for src file
         """
 
         src = Path(src) / str(name)
-        getattr(self.fe, mode)(src, dst)
+        getattr(self.fe, func)(src, dst)
 
     def rename(self, directory, name, new_name):
         """
