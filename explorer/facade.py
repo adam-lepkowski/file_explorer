@@ -184,7 +184,14 @@ class Facade:
         src = Path(directory) / str(name)
         if src.exists():
             dst = Path(directory) / str(new_name)
-            self.fe.rename(src, dst)
+            new_obj = self.fe.rename(src, dst)
+            item = {
+                "src": src,
+                "func": "rename",
+                "dst": Path(dst),
+                "new_obj": new_obj
+            }
+            self.cache.store(item)
         else:
             raise FileNotFoundError("Invalid source directory path")
 
