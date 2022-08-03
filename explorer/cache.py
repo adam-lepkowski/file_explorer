@@ -53,10 +53,13 @@ class Cache:
         """
         Return action pointed by current.
 
-        Raises
+        Returns
         ---------------
-        IndexError
-            if current points at item out of range
+        Object stored in items
+        OR
+        None
         """
 
-        return self.items[self.current]
+        if self.items:
+            return self.items[self.current]
+        return None
