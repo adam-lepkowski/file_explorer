@@ -60,6 +60,5 @@ class TestGetCurrent(unittest.TestCase):
         expected = "item"
         self.assertEqual(expected, result)
 
-    def test_get_current_no_items_raises_error(self):
-        with self.assertRaises(IndexError):
-            self.cache.get_current()
+    def test_get_current_no_items_return_none(self):
+        self.assertIsNone(self.cache.get_current())
