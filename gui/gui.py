@@ -60,6 +60,7 @@ class GUI(tk.Tk):
         self.command_menu.add_command(label='paste', command=self.paste)
         self.command_menu.add_command(label='rename', command=self.rename_popup)
         self.command_menu.add_command(label="delete", command=self.delete)
+        self.bind_all("<Control_L><z>", self.undo)
 
     def add_tab(self, event=None):
         """
@@ -290,3 +291,16 @@ class GUI(tk.Tk):
         name = row[0]
         directory = self.prev_focus.master.master.current_dir
         return (directory, name)
+
+    def undo(self, event):
+        """
+        Undo a previously performed action.
+        """
+        
+        try:
+            self.fe.undo()
+        except FileNotFoundError as e:
+            title = "Operation can't be undone"
+            message = "An error has occured while undoing operation "
+            msg.showerror(title=title, message=f"{message}: {str(e)}")
+        self.refresh()
