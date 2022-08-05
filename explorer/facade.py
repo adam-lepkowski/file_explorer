@@ -210,3 +210,26 @@ class Facade:
         target = Path(directory) / str(name)
         if target.exists():
             self.fe.rm(target)
+
+    def undo(self):
+        """
+        Undo an action.
+        """
+
+        action = self.cache.get_current()
+        if action:
+            if action["func"].lower() == "copy":
+                self.fe.rm(action["new_obj"])
+            elif action["func"].lower() == "move":
+                src = action["new_obj"]
+                dst = action["src"].parent
+                new_name = src.stem
+                prev_name = action["src"].stem
+                moved_file = self.fe.move(src, dst)
+                if prev_name != new_name:
+                    self.fe.rename(moved_file, prev_name)
+            elif action["func"].lower() == "rename":
+                src = action["new_obj"]
+                prev_name = action["src"].stem
+                self.fe.rename(src, prev_name)
+        self.cache.undo()
