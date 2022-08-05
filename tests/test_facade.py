@@ -173,3 +173,67 @@ class TestDelete(unittest.TestCase):
     def test_delete(self, rm_mock, exists_mock):
         self.facade.delete(self.src, self.name)
         rm_mock.assert_called_with(Path(self.src) / self.name)
+
+
+class TestUndo(unittest.TestCase):
+
+    def setUp(self):
+        self.facade = Facade()
+        self.prev_action = {
+            "src": Path("src/foo/foo_bar.py"),
+            "new_obj": Path("dst/foo/bar/foo_bar.py")
+        }
+
+    @patch("explorer.facade.FileExplorer.rm")
+    @patch("explorer.facade.Cache.undo")
+    @patch("explorer.facade.Cache.get_current")
+    def test_undo_copy(self, get_current_mock, undo_mock, rm_mock):
+        self.prev_action["func"] = "copy"
+        get_current_mock.return_value = self.prev_action
+        self.facade.undo()
+        get_current_mock.assert_called_once()
+        rm_mock.assert_called_with(self.prev_action["new_obj"])
+        undo_mock.assert_called_once()
+
+    @patch("explorer.facade.FileExplorer.rename")
+    @patch("explorer.facade.FileExplorer.move")
+    @patch("explorer.facade.Cache.undo")
+    @patch("explorer.facade.Cache.get_current")
+    def test_undo_move_src_not_renamed(self, get_current_mock, undo_mock,
+                                       move_mock, rename_mock):
+        self.prev_action["func"] = "move"
+        get_current_mock.return_value = self.prev_action
+        self.facade.undo()
+        get_current_mock.assert_called_once()
+        move_mock.assert_called_with(
+            self.prev_action["new_obj"], self.prev_action["src"].parent
+        )
+        undo_mock.assert_called_once()
+        rename_mock.assert_not_called()
+
+    @patch("explorer.facade.FileExplorer.rename")
+    @patch("explorer.facade.FileExplorer.move")
+    @patch("explorer.facade.Cache.undo")
+    @patch("explorer.facade.Cache.get_current")
+    def test_undo_move_src_renamed(self, get_current_mock, undo_mock,
+                                   move_mock,rename_mock):
+        self.prev_action["func"] = "move"
+        self.prev_action["src"] = Path("src/foo/bar.py")
+        get_current_mock.return_value = self.prev_action
+        move_mock.return_value = Path("src/foo/foo_bar.py")
+        self.facade.undo()
+        get_current_mock.assert_called_once()
+        undo_mock.assert_called_once()
+        rename_mock.assert_called_with(Path("src/foo/foo_bar.py"), "bar")
+
+    @patch("explorer.facade.FileExplorer.rename")
+    @patch("explorer.facade.Cache.undo")
+    @patch("explorer.facade.Cache.get_current")
+    def test_undo_rename(self, get_current_mock, undo_mock, rename_mock):
+        self.prev_action["func"] = "rename"
+        self.prev_action["new_obj"] = Path("src/foo/bar_foo.py")
+        get_current_mock.return_value = self.prev_action
+        self.facade.undo()
+        get_current_mock.assert_called_once()
+        undo_mock.assert_called_once()
+        rename_mock.assert_called_with(Path("src/foo/bar_foo.py"), "foo_bar")
