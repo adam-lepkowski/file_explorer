@@ -62,3 +62,13 @@ class TestGetCurrent(unittest.TestCase):
 
     def test_get_current_no_items_return_none(self):
         self.assertIsNone(self.cache.get_current())
+
+
+class TestClear(unittest.TestCase):
+
+    def test_clear(self):
+        cache = Cache()
+        cache.store("foo")
+        cache.clear()
+        self.assertEqual(cache.items, [])
+        self.assertEqual(cache.current, -1)
