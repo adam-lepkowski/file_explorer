@@ -87,6 +87,7 @@ class GUI(tk.Tk):
         tab.l_frm.tree.tree.bind('<Button-3>', self.menu_popup)
         tab.l_frm.tree.tree.bind("<Control_L><c>", lambda e: self.store_src("copy", e))
         tab.l_frm.tree.tree.bind("<Control_L><v>", self.paste)
+        tab.l_frm.tree.tree.bind("<Delete>", self.delete)
         if self.view_var.get() == "double":
             tab.transfer_bar.copy_right_btn["command"] = lambda: self.transfer("right", "copy")
             tab.transfer_bar.copy_left_btn["command"] = lambda: self.transfer("left", "copy")
@@ -106,6 +107,7 @@ class GUI(tk.Tk):
             tab.r_frm.tree.tree.bind('<Button-3>', self.menu_popup)
             tab.r_frm.tree.tree.bind("<Control_L><c>", lambda e: self.store_src("copy", e))
             tab.r_frm.tree.tree.bind("<Control_L><v>", self.paste)
+            tab.r_frm.tree.tree.bind("<Delete>", self.delete)
         self.nbook.add(tab, text=text)
         self.refresh()
 
@@ -278,15 +280,20 @@ class GUI(tk.Tk):
             entry.destroy()
             self.refresh()
 
-    def delete(self):
+    def delete(self, event=None):
         """
-        Permanently delete a file or directory.
+        Permanently delete a file or directory and clear cache.
         """
 
-        directory, name = self.get_path()
-        message = f"Do you really want to delete {name}? This operation can't be undone"
-        if msg.askyesno(title="Delete file", message=message):
-            self.fe.delete(directory, name)
+        if event:
+            self.prev_focus = event.widget
+
+        if self.prev_focus.focus():
+            directory, name = self.get_path()
+            message = f"Do you really want to delete {name}? This operation can't be undone"
+            if msg.askyesno(title="Delete file", message=message):
+                self.fe.delete(directory, name)
+                self.fe.clear_cache()
         self.refresh()
 
     def get_path(self):
