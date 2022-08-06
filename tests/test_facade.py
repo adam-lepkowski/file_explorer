@@ -238,6 +238,36 @@ class TestUndo(unittest.TestCase):
         undo_mock.assert_called_once()
         rename_mock.assert_called_with(Path("src/foo/bar_foo.py"), "foo_bar")
 
+    @patch("explorer.facade.FileExplorer.rm")
+    @patch("explorer.facade.Cache.undo")
+    @patch("explorer.facade.Cache.get_current")
+    def test_undo_sets_last_undo(self, get_current_mock, undo_mock, rm_mock):
+        self.prev_action["func"] = "copy"
+        get_current_mock.return_value = self.prev_action
+        self.facade.undo()
+        self.assertEqual(self.facade.last_undo, self.prev_action)
+
+    @patch("explorer.facade.FileExplorer.rm")
+    @patch("explorer.facade.Cache.undo")
+    @patch("explorer.facade.Cache.get_current")
+    def test_undo_clears_last_redo(self, get_current_mock, undo_mock, rm_mock):
+        self.prev_action["func"] = "copy"
+        get_current_mock.return_value = self.prev_action
+        self.facade.last_redo = "foo_bar"
+        self.facade.undo()
+        self.assertIsNone(self.facade.last_redo)
+
+    @patch("explorer.facade.FileExplorer.rm")
+    @patch("explorer.facade.Cache.undo")
+    @patch("explorer.facade.Cache.get_current")
+    def test_cant_undo_same_action(self, get_current_mock, undo_mock, rm_mock):
+        self.prev_action["func"] = "copy"
+        get_current_mock.return_value = self.prev_action
+        self.facade.last_undo = self.prev_action
+        self.facade.undo()
+        rm_mock.assert_not_called()
+
+
 class TestRedo(unittest.TestCase):
 
     def setUp(self):
@@ -285,3 +315,32 @@ class TestRedo(unittest.TestCase):
             self.prev_action["src"], self.prev_action["dst"]
         )
         redo_mock.assert_called_once()
+
+    @patch("explorer.facade.FileExplorer.rename")
+    @patch("explorer.facade.Cache.redo")
+    @patch("explorer.facade.Cache.get_current")
+    def test_redo_sets_last_redo(self, get_curr_mock, redo_mock, rename_mock):
+        self.prev_action["func"] = "rename"
+        get_curr_mock.return_value = self.prev_action
+        self.facade.redo()
+        self.assertEqual(self.prev_action, self.facade.last_redo)
+
+    @patch("explorer.facade.FileExplorer.rename")
+    @patch("explorer.facade.Cache.redo")
+    @patch("explorer.facade.Cache.get_current")
+    def test_redo_sets_last_redo(self, get_curr_mock, redo_mock, rename_mock):
+        self.prev_action["func"] = "rename"
+        get_curr_mock.return_value = self.prev_action
+        self.facade.last_undo = "foo_bar"
+        self.facade.redo()
+        self.assertIsNone(self.facade.last_undo)
+
+    @patch("explorer.facade.FileExplorer.rename")
+    @patch("explorer.facade.Cache.redo")
+    @patch("explorer.facade.Cache.get_current")
+    def test_cant_redo_same_action(self, get_curr_mock, redo_mock, rename_mock):
+        self.prev_action["func"] = "rename"
+        get_curr_mock.return_value = self.prev_action
+        self.facade.last_redo = self.prev_action
+        self.facade.redo()
+        rename_mock.assert_not_called()
