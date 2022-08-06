@@ -237,3 +237,51 @@ class TestUndo(unittest.TestCase):
         get_current_mock.assert_called_once()
         undo_mock.assert_called_once()
         rename_mock.assert_called_with(Path("src/foo/bar_foo.py"), "foo_bar")
+
+class TestRedo(unittest.TestCase):
+
+    def setUp(self):
+        self.facade = Facade()
+        self.prev_action = {
+            "src": Path("src/foo/foo_bar.py"),
+            "dst": Path("dst/foo/foo_bar.py")
+        }
+
+    @patch("explorer.facade.FileExplorer.copy")
+    @patch("explorer.facade.Cache.redo")
+    @patch("explorer.facade.Cache.get_current")
+    def test_redo_copy(self, get_current_mock, redo_mock, copy_mock):
+        self.prev_action["func"] = "copy"
+        get_current_mock.return_value = self.prev_action
+        self.facade.redo()
+        get_current_mock.assert_called_once()
+        copy_mock.assert_called_with(
+            self.prev_action["src"], self.prev_action["dst"]
+        )
+        redo_mock.assert_called_once()
+
+    @patch("explorer.facade.FileExplorer.move")
+    @patch("explorer.facade.Cache.redo")
+    @patch("explorer.facade.Cache.get_current")
+    def test_redo_move(self, get_current_mock, redo_mock, move_mock):
+        self.prev_action["func"] = "move"
+        get_current_mock.return_value = self.prev_action
+        self.facade.redo()
+        get_current_mock.assert_called_once()
+        move_mock.assert_called_with(
+            self.prev_action["src"], self.prev_action["dst"]
+        )
+        redo_mock.assert_called_once()
+
+    @patch("explorer.facade.FileExplorer.rename")
+    @patch("explorer.facade.Cache.redo")
+    @patch("explorer.facade.Cache.get_current")
+    def test_redo_rename(self, get_current_mock, redo_mock, rename_mock):
+        self.prev_action["func"] = "rename"
+        get_current_mock.return_value = self.prev_action
+        self.facade.redo()
+        get_current_mock.assert_called_once()
+        rename_mock.assert_called_with(
+            self.prev_action["src"], self.prev_action["dst"]
+        )
+        redo_mock.assert_called_once()
