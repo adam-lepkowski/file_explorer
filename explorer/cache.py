@@ -63,3 +63,11 @@ class Cache:
         if self.items:
             return self.items[self.current]
         return None
+
+    def clear(self):
+        """
+        Restore default attr values.
+        """
+
+        self.items = []
+        self.current = -1
