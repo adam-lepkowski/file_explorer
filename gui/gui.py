@@ -61,6 +61,7 @@ class GUI(tk.Tk):
         self.command_menu.add_command(label='rename', command=self.rename_popup)
         self.command_menu.add_command(label="delete", command=self.delete)
         self.bind_all("<Control_L><z>", self.undo)
+        self.bind_all("<Control_L><y>", self.redo)
 
     def add_tab(self, event=None):
         """
@@ -296,11 +297,24 @@ class GUI(tk.Tk):
         """
         Undo a previously performed action.
         """
-        
+
         try:
             self.fe.undo()
         except FileNotFoundError as e:
             title = "Operation can't be undone"
             message = "An error has occured while undoing operation "
+            msg.showerror(title=title, message=f"{message}: {str(e)}")
+        self.refresh()
+
+    def redo(self, event):
+        """
+        Redo a previously undone action.
+        """
+
+        try:
+            self.fe.redo()
+        except FileNotFoundError as e:
+            title = "Operation can't be redone"
+            message = "An error has occured while redoing operation "
             msg.showerror(title=title, message=f"{message}: {str(e)}")
         self.refresh()
