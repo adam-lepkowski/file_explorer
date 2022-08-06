@@ -85,6 +85,8 @@ class GUI(tk.Tk):
             validate="focusout", validatecommand=vcmd, invalidcommand=ivcmd
         )
         tab.l_frm.tree.tree.bind('<Button-3>', self.menu_popup)
+        tab.l_frm.tree.tree.bind("<Control_L><c>", lambda e: self.store_src("copy", e))
+        tab.l_frm.tree.tree.bind("<Control_L><v>", self.paste)
         if self.view_var.get() == "double":
             tab.transfer_bar.copy_right_btn["command"] = lambda: self.transfer("right", "copy")
             tab.transfer_bar.copy_left_btn["command"] = lambda: self.transfer("left", "copy")
@@ -102,6 +104,8 @@ class GUI(tk.Tk):
                 validate="focusout", validatecommand=vcmd, invalidcommand=ivcmd
             )
             tab.r_frm.tree.tree.bind('<Button-3>', self.menu_popup)
+            tab.r_frm.tree.tree.bind("<Control_L><c>", lambda e: self.store_src("copy", e))
+            tab.r_frm.tree.tree.bind("<Control_L><v>", self.paste)
         self.nbook.add(tab, text=text)
         self.refresh()
 
@@ -170,10 +174,13 @@ class GUI(tk.Tk):
             self.prev_focus = event.widget
             self.command_menu.post(event.x_root, event.y_root)
 
-    def paste(self):
+    def paste(self, event=None):
         """
         Paste copied object and refresh displayed tab.
         """
+
+        if event:
+            self.prev_focus = event.widget
 
         dst = self.prev_focus.master.master.current_dir
         try:
@@ -192,7 +199,7 @@ class GUI(tk.Tk):
         current_dir = widget.master.master.current_dir
         widget.master.addr_var.set(current_dir)
 
-    def store_src(self, func):
+    def store_src(self, func, event=None):
         """
         Store file or dir path to copy/move it later.
 
@@ -202,12 +209,16 @@ class GUI(tk.Tk):
             file operation intended for src file
         """
 
-        directory, name = self.get_path()
-        try:
-            self.fe.store_src(directory, name, func)
-        except FileNotFoundError as e:
-            msg.showerror("Invalid destination directory", str(e))
-        explorer = self.prev_focus.master.master.master
+        if event:
+            self.prev_focus = event.widget
+
+        if self.prev_focus.focus():
+            directory, name = self.get_path()
+            try:
+                self.fe.store_src(directory, name, func)
+            except FileNotFoundError as e:
+                msg.showerror("Invalid destination directory", str(e))
+            explorer = self.prev_focus.master.master.master
         self.refresh()
 
     def transfer(self, direction, func):
