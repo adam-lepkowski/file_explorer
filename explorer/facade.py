@@ -16,12 +16,18 @@ class Facade:
     current_obj : None or dict
         path: path to a source object for later use
         func: move or copy
+    last_undo: None or dict
+        last undone action. Prevent undo loops
+    last_redo: None or dict
+        last redone action. Prevent redo loops
     """
 
     def __init__(self):
         self.fe = FileExplorer()
         self.cache = Cache()
         self.current_obj = None
+        self.last_undo = None
+        self.last_redo = None
 
     def get_default_dir(self):
         """
