@@ -223,7 +223,7 @@ class Facade:
         """
 
         action = self.cache.get_current()
-        if action:
+        if action and action != self.last_undo:
             if action["func"].lower() == "copy":
                 self.fe.rm(action["new_obj"])
             elif action["func"].lower() == "move":
@@ -238,6 +238,8 @@ class Facade:
                 src = action["new_obj"]
                 prev_name = action["src"].stem
                 self.fe.rename(src, prev_name)
+            self.last_undo = action
+            self.last_redo = None
         self.cache.undo()
 
     def redo(self):
@@ -246,9 +248,11 @@ class Facade:
         """
 
         action = self.cache.get_current()
-        if action:
+        if action and action != self.last_redo:
             func = action["func"]
             src = action["src"]
             dst = action["dst"]
             getattr(self.fe, func)(src, dst)
+            self.last_redo = action
+            self.last_undo = None
         self.cache.redo()
