@@ -256,3 +256,13 @@ class Facade:
             self.last_redo = action
             self.last_undo = None
         self.cache.redo()
+
+    def clear_cache(self):
+        """
+        Reset cache attrs to default values
+        """
+
+        self.current_obj = None
+        self.last_redo = None
+        self.last_undo = None
+        self.cache.clear()
