@@ -233,3 +233,16 @@ class Facade:
                 prev_name = action["src"].stem
                 self.fe.rename(src, prev_name)
         self.cache.undo()
+
+    def redo(self):
+        """
+        Redo an undone action.
+        """
+
+        action = self.cache.get_current()
+        if action:
+            func = action["func"]
+            src = action["src"]
+            dst = action["dst"]
+            getattr(self.fe, func)(src, dst)
+        self.cache.redo()
