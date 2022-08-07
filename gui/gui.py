@@ -145,11 +145,13 @@ class GUI(tk.Tk):
 
     def refresh(self):
         """
-        Refresh frame and displayed content.
+        Refresh all frames and displayed content.
         """
-        frm = self.nametowidget(self.nbook.select())
-        frm.l_frm.nav_bar.cnf_addr_btn.invoke()
-        frm.r_frm.nav_bar.cnf_addr_btn.invoke()
+
+        for frm in self.nbook.tabs():
+            frm = self.nametowidget(frm)
+            frm.l_frm.nav_bar.cnf_addr_btn.invoke()
+            frm.r_frm.nav_bar.cnf_addr_btn.invoke()
 
     def display_parent(self, button):
         """
