@@ -219,10 +219,11 @@ class GUI(tk.Tk):
         if event:
             self.prev_focus = event.widget
 
-        if self.prev_focus.focus():
-            directory, name = self.get_path()
+        if self.prev_focus.selection():
+            objs = self.get_path()
             try:
-                self.fe.store_src(directory, name, func)
+                objs["func"] = func
+                self.fe.store_src(objs)
             except FileNotFoundError as e:
                 msg.showerror("Invalid destination directory", str(e))
             explorer = self.prev_focus.master.master.master
@@ -276,7 +277,9 @@ class GUI(tk.Tk):
         """
 
         new_name = entry.get()
-        directory, name = self.get_path()
+        selection = self.get_path()
+        directory, name = selection["parent"], selection["names"][0]
+
         try:
             self.fe.rename(directory, name, new_name)
         except FileExistsError as e:
@@ -303,18 +306,22 @@ class GUI(tk.Tk):
 
     def get_path(self):
         """
-        Get selected object name and parent dir path.
+        Get selected objects names and parent dir path.
 
         Returns
         ---------------
-        tuple
-            directory path and object name
+        dictionary
+            parent: object parent directory
+            names: list of file/dir names
         """
 
-        row = self.prev_focus.item(self.prev_focus.focus())["values"]
-        name = row[0]
+        names = []
         directory = self.prev_focus.master.master.current_dir
-        return (directory, name)
+        for selected in self.prev_focus.selection():
+            row = self.prev_focus.item(selected)["values"]
+            name = row[0]
+            names.append(name)
+        return {"parent": directory, "names": names}
 
     def undo(self, event):
         """
