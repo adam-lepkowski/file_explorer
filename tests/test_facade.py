@@ -62,13 +62,19 @@ class TestPaste(unittest.TestCase):
         self.facade = Facade()
 
     @patch("explorer.facade.FileExplorer.copy")
-    def test_paste_with_current_obj(self, copy_mock):
-        self.facade.current_obj = {
-            "src": "src/foo/bar",
-            "func": "copy"
-        }
+    def test_paste_single_obj(self, copy_mock):
+        self.facade.current_obj = [{"src": "src/foo/bar", "func": "copy"}]
         self.facade.paste("dst/foo/bar")
         copy_mock.assert_called_with("src/foo/bar", "dst/foo/bar")
+
+    @patch("explorer.facade.FileExplorer.copy")
+    def test_paste_multiple_obj(self, copy_mock):
+        self.facade.current_obj = [
+            {"src": "src/foo/bar", "func": "copy"},
+            {"src": "src/foo/bar", "func": "copy"}
+        ]
+        self.facade.paste("dst/foo/bar")
+        self.assertEqual(copy_mock.call_count, 2)
 
     @patch("explorer.facade.FileExplorer.copy")
     def test_paste_no_current_obj(self, copy_mock):
@@ -77,17 +83,14 @@ class TestPaste(unittest.TestCase):
 
     @patch("explorer.facade.FileExplorer.copy", return_value="dst/foo/bar/bar")
     def test_paste_cache_item(self, copy_mock):
-        self.facade.current_obj = {
-            "src": "src/foo/bar",
-            "func": "copy"
-        }
+        self.facade.current_obj = [{"src": "src/foo/bar", "func": "copy"}]
         self.facade.paste("dst/foo/bar")
-        expected = {
+        expected = [{
             "src": "src/foo/bar",
             "func": "copy",
             "dst": Path("dst/foo/bar"),
             "new_obj": "dst/foo/bar/bar"
-        }
+        }]
         result = self.facade.cache.items[0]
         self.assertEqual(expected, result)
 
@@ -99,19 +102,27 @@ class TestStoreSrc(unittest.TestCase):
 
     @patch("explorer.facade.Path.exists", return_value=True)
     def test_copy(self, exists_mock):
-        directory = "foo"
-        name = "bar.py"
-        self.facade.store_src(directory, name, "copy")
-        result = self.facade.current_obj
-        expected = {
-            "src": Path("foo/bar.py"),
+        objs = {
+            "parent": "foo",
+            "names": ["bar.py", "foo_bar.py"],
             "func": "copy"
         }
+        self.facade.store_src(objs)
+        result = self.facade.current_obj
+        expected = [
+            {"src": Path("foo/bar.py"), "func": "copy"},
+            {"src": Path("foo/foo_bar.py"), "func": "copy"}
+        ]
         self.assertEqual(expected, result)
 
     def test_copy_raises(self):
+        objs = {
+            "parent": "foo",
+            "names": ["bar.py", "foo_bar.py"],
+            "func": "copy"
+        }
         with self.assertRaises(FileNotFoundError):
-            self.facade.store_src("foo", "bar.py", "copy")
+            self.facade.store_src(objs)
 
 
 class TestTransfer(unittest.TestCase):
