@@ -129,31 +129,45 @@ class TestTransfer(unittest.TestCase):
 
     def setUp(self):
         self.facade = Facade()
-        self.src = "src/foo"
-        self.name = "bar.py"
-        self.dst = "dst/foo/bar"
+        self.objs = {
+            "src": "src/foo",
+            "names": ["bar.py"],
+            "dst": "dst/foo/bar",
+        }
 
     @patch("explorer.facade.FileExplorer.copy")
     def test_transfer_copy(self, copy_mock):
-        self.facade.transfer(self.src, self.name, self.dst, "copy")
+        self.objs["func"] = "copy"
+        self.facade.transfer(self.objs)
         copy_mock.assert_called_with(Path("src/foo/bar.py"), "dst/foo/bar")
 
+    @patch("explorer.facade.FileExplorer.copy")
+    def test_transfer_copy_multiple(self, copy_mock):
+        self.objs["func"] = "copy"
+        self.objs["names"].append("foo.py")
+        self.facade.transfer(self.objs)
+        self.assertEqual(copy_mock.call_count, 2)
+
     @patch("explorer.facade.FileExplorer.move")
-    def test_transfer_copy(self, move_mock):
-        self.facade.transfer(self.src, self.name, self.dst, "move")
+    def test_transfer_move(self, move_mock):
+        self.objs["func"] = "move"
+        self.facade.transfer(self.objs)
         move_mock.assert_called_with(Path("src/foo/bar.py"), "dst/foo/bar")
 
     @patch("explorer.facade.FileExplorer.move", return_value="dst/foo/bar/bar.py")
     def test_transfer_cache_item(self, copy_mock):
-        self.facade.transfer(self.src, self.name, self.dst, "move")
+        self.objs["func"] = "move"
+        self.facade.transfer(self.objs)
         expected = {
             "src": Path("src/foo/bar.py"),
             "func": "move",
             "dst": Path("dst/foo/bar"),
             "new_obj": "dst/foo/bar/bar.py"
         }
-        result = self.facade.cache.items[0]
+        result = self.facade.cache.items[0][0]
         self.assertEqual(expected, result)
+
+
 
 
 class TestRename(unittest.TestCase):
