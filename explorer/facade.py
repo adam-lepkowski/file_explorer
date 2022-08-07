@@ -227,23 +227,24 @@ class Facade:
         Undo an action.
         """
 
-        action = self.cache.get_current()
-        if action and action != self.last_undo:
-            if action["func"].lower() == "copy":
-                self.fe.rm(action["new_obj"])
-            elif action["func"].lower() == "move":
-                src = action["new_obj"]
-                dst = action["src"].parent
-                new_name = src.stem
-                prev_name = action["src"].stem
-                moved_file = self.fe.move(src, dst)
-                if prev_name != new_name:
-                    self.fe.rename(moved_file, prev_name)
-            elif action["func"].lower() == "rename":
-                src = action["new_obj"]
-                prev_name = action["src"].stem
-                self.fe.rename(src, prev_name)
-            self.last_undo = action
+        actions = self.cache.get_current()
+        if actions and actions != self.last_undo:
+            for action in actions:
+                if action["func"].lower() == "copy":
+                    self.fe.rm(action["new_obj"])
+                elif action["func"].lower() == "move":
+                    src = action["new_obj"]
+                    dst = action["src"].parent
+                    new_name = src.stem
+                    prev_name = action["src"].stem
+                    moved_file = self.fe.move(src, dst)
+                    if prev_name != new_name:
+                        self.fe.rename(moved_file, prev_name)
+                elif action["func"].lower() == "rename":
+                    src = action["new_obj"]
+                    prev_name = action["src"].stem
+                    self.fe.rename(src, prev_name)
+            self.last_undo = actions
             self.last_redo = None
         self.cache.undo()
 
@@ -252,14 +253,15 @@ class Facade:
         Redo an undone action.
         """
 
-        action = self.cache.get_current()
-        if action and action != self.last_redo:
-            func = action["func"]
-            src = action["src"]
-            dst = action["dst"]
-            getattr(self.fe, func)(src, dst)
-            self.last_redo = action
+        actions = self.cache.get_current()
+        if actions and actions != self.last_redo:
+            for action in actions:
+                func = action["func"]
+                src = action["src"]
+                dst = action["dst"]
+                getattr(self.fe, func)(src, dst)
             self.last_undo = None
+            self.last_redo = actions
         self.cache.redo()
 
     def clear_cache(self):
@@ -267,7 +269,7 @@ class Facade:
         Reset cache attrs to default values
         """
 
-        self.current_obj = None
+        self.current_obj = []
         self.last_redo = None
         self.last_undo = None
         self.cache.clear()
