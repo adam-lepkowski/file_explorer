@@ -242,16 +242,19 @@ class GUI(tk.Tk):
             file operation intended for src file
         """
 
+        names = []
         widget = self.nametowidget(self.nbook.select())
         l_addr = widget.l_frm.nav_bar.addr_var.get()
         r_addr = widget.r_frm.nav_bar.addr_var.get()
         tree = widget.l_frm.tree.tree if direction == "right" else widget.r_frm.tree.tree
         src = l_addr if direction == "right" else r_addr
         dst = r_addr if direction == "right" else l_addr
-        row = tree.item(tree.focus())["values"]
-        if row:
-            name = row[0]
-            self.fe.transfer(src, name, dst, func)
+        for item in tree.selection():
+            row = tree.item(item)["values"]
+            if row:
+                names.append(row[0])
+        objs = {"src": src, "dst": dst, "names": names, "func": func}
+        self.fe.transfer(objs)
         self.refresh()
 
     def rename_popup(self):
