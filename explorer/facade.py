@@ -13,9 +13,8 @@ class Facade:
     ---------------
     fe : FileExplorer
     cache : Cache
-    current_obj : None or dict
-        path: path to a source object for later use
-        func: move or copy
+    current_obj : list
+        list of object awaiting further action - copy/move
     last_undo: None or dict
         last undone action. Prevent undo loops
     last_redo: None or dict
@@ -25,7 +24,7 @@ class Facade:
     def __init__(self):
         self.fe = FileExplorer()
         self.cache = Cache()
-        self.current_obj = None
+        self.current_obj = []
         self.last_undo = None
         self.last_redo = None
 
@@ -108,44 +107,49 @@ class Facade:
             path to destination dir
         """
 
+        items = []
         if self.current_obj:
-            src = self.current_obj["src"]
-            new_obj = getattr(self.fe, self.current_obj["func"])(src, dst)
-            item = {
-                "src": src,
-                "func": self.current_obj["func"],
-                "dst": Path(dst),
-                "new_obj": new_obj
-            }
-            self.cache.store(item)
+            for obj in self.current_obj:
+                src = obj["src"]
+                new_obj = getattr(self.fe, obj["func"])(src, dst)
+                item = {
+                    "src": src,
+                    "func": obj["func"],
+                    "dst": Path(dst),
+                    "new_obj": new_obj
+                }
+                items.append(item)
+        self.cache.store(items)
 
     def is_valid_path(self, path):
         return Path(path).is_dir()
 
-    def store_src(self, directory, name, func):
+    def store_src(self, objs):
         """
         Store obj path for later use.
 
         Parameters
         ---------------
-        directory : str
-            absolute path to file or dir stored for copy
-        name : str
-            file or dir name
-        func : {move, copy}
-            file operation intended for src file
-
+        objs : dict
+            parent: parent directory
+            names: src file/dir names selected
+            func : {move, copy}
+                file operation intended for src file
         Raises
         ---------------
         FileNotFoundError
-            If path is not a directory
+            If file/dir does not exist
         """
 
-        path = Path(directory) / str(name)
-        if path.exists():
-            self.current_obj = {"src": path, "func": func}
-        else:
-            raise FileNotFoundError("Target does not exist")
+        current = []
+        for name in objs["names"]:
+            path = Path(objs["parent"]) / str(name)
+            if path.exists():
+                current.append({"src": path, "func": objs["func"]})
+            else:
+                raise FileNotFoundError("Target does not exist")
+        self.current_obj = current
+
 
     def transfer(self, src, name, dst, func):
         """
