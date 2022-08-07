@@ -300,10 +300,11 @@ class GUI(tk.Tk):
             self.prev_focus = event.widget
 
         if self.prev_focus.focus():
-            directory, name = self.get_path()
-            message = f"Do you really want to delete {name}? This operation can't be undone"
-            if msg.askyesno(title="Delete file", message=message):
-                self.fe.delete(directory, name)
+            objs = self.get_path()
+            message = "Do you really want to delete selected items?\n" \
+            "This operation can't be undone."
+            if msg.askyesno(title="Delete", message=message):
+                self.fe.delete(objs)
                 self.fe.clear_cache()
         self.refresh()
 
