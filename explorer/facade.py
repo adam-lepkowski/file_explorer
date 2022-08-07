@@ -206,21 +206,21 @@ class Facade:
         else:
             raise FileNotFoundError("Invalid source directory path")
 
-    def delete(self, directory, name):
+    def delete(self, objs):
         """
-        Permanently delete a file or directory.
+        Permanently files or directories.
 
         Parameters
         ---------------
-        directory : str
-            path to source dir
-        name : str
-            name of file/directory to be deleted
+        objs: dict
+            parent: parent directory
+            names: src file/dir names selected
         """
 
-        target = Path(directory) / str(name)
-        if target.exists():
-            self.fe.rm(target)
+        for name in objs["names"]:
+            target = Path(objs["parent"]) / str(name)
+            if target.exists():
+                self.fe.rm(target)
 
     def undo(self):
         """
