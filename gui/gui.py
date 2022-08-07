@@ -86,6 +86,7 @@ class GUI(tk.Tk):
         )
         tab.l_frm.tree.tree.bind('<Button-3>', self.menu_popup)
         tab.l_frm.tree.tree.bind("<Control_L><c>", lambda e: self.store_src("copy", e))
+        tab.l_frm.tree.tree.bind("<Control_L><x>", lambda e: self.store_src("move", e))
         tab.l_frm.tree.tree.bind("<Control_L><v>", self.paste)
         tab.l_frm.tree.tree.bind("<Delete>", self.delete)
         if self.view_var.get() == "double":
@@ -106,6 +107,7 @@ class GUI(tk.Tk):
             )
             tab.r_frm.tree.tree.bind('<Button-3>', self.menu_popup)
             tab.r_frm.tree.tree.bind("<Control_L><c>", lambda e: self.store_src("copy", e))
+            tab.r_frm.tree.tree.bind("<Control_L><x>", lambda e: self.store_src("move", e))
             tab.r_frm.tree.tree.bind("<Control_L><v>", self.paste)
             tab.r_frm.tree.tree.bind("<Delete>", self.delete)
         self.nbook.add(tab, text=text)
