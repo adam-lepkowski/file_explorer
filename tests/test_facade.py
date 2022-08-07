@@ -221,7 +221,7 @@ class TestUndo(unittest.TestCase):
     @patch("explorer.facade.Cache.get_current")
     def test_undo_copy(self, get_current_mock, undo_mock, rm_mock):
         self.prev_action["func"] = "copy"
-        get_current_mock.return_value = self.prev_action
+        get_current_mock.return_value = [self.prev_action]
         self.facade.undo()
         get_current_mock.assert_called_once()
         rm_mock.assert_called_with(self.prev_action["new_obj"])
@@ -234,7 +234,7 @@ class TestUndo(unittest.TestCase):
     def test_undo_move_src_not_renamed(self, get_current_mock, undo_mock,
                                        move_mock, rename_mock):
         self.prev_action["func"] = "move"
-        get_current_mock.return_value = self.prev_action
+        get_current_mock.return_value = [self.prev_action]
         self.facade.undo()
         get_current_mock.assert_called_once()
         move_mock.assert_called_with(
@@ -251,7 +251,7 @@ class TestUndo(unittest.TestCase):
                                    move_mock,rename_mock):
         self.prev_action["func"] = "move"
         self.prev_action["src"] = Path("src/foo/bar.py")
-        get_current_mock.return_value = self.prev_action
+        get_current_mock.return_value = [self.prev_action]
         move_mock.return_value = Path("src/foo/foo_bar.py")
         self.facade.undo()
         get_current_mock.assert_called_once()
@@ -264,7 +264,7 @@ class TestUndo(unittest.TestCase):
     def test_undo_rename(self, get_current_mock, undo_mock, rename_mock):
         self.prev_action["func"] = "rename"
         self.prev_action["new_obj"] = Path("src/foo/bar_foo.py")
-        get_current_mock.return_value = self.prev_action
+        get_current_mock.return_value = [self.prev_action]
         self.facade.undo()
         get_current_mock.assert_called_once()
         undo_mock.assert_called_once()
@@ -275,16 +275,16 @@ class TestUndo(unittest.TestCase):
     @patch("explorer.facade.Cache.get_current")
     def test_undo_sets_last_undo(self, get_current_mock, undo_mock, rm_mock):
         self.prev_action["func"] = "copy"
-        get_current_mock.return_value = self.prev_action
+        get_current_mock.return_value = [self.prev_action]
         self.facade.undo()
-        self.assertEqual(self.facade.last_undo, self.prev_action)
+        self.assertEqual(self.facade.last_undo, [self.prev_action])
 
     @patch("explorer.facade.FileExplorer.rm")
     @patch("explorer.facade.Cache.undo")
     @patch("explorer.facade.Cache.get_current")
     def test_undo_clears_last_redo(self, get_current_mock, undo_mock, rm_mock):
         self.prev_action["func"] = "copy"
-        get_current_mock.return_value = self.prev_action
+        get_current_mock.return_value = [self.prev_action]
         self.facade.last_redo = "foo_bar"
         self.facade.undo()
         self.assertIsNone(self.facade.last_redo)
@@ -294,8 +294,8 @@ class TestUndo(unittest.TestCase):
     @patch("explorer.facade.Cache.get_current")
     def test_cant_undo_same_action(self, get_current_mock, undo_mock, rm_mock):
         self.prev_action["func"] = "copy"
-        get_current_mock.return_value = self.prev_action
-        self.facade.last_undo = self.prev_action
+        get_current_mock.return_value = [self.prev_action]
+        self.facade.last_undo = [self.prev_action]
         self.facade.undo()
         rm_mock.assert_not_called()
 
@@ -314,7 +314,7 @@ class TestRedo(unittest.TestCase):
     @patch("explorer.facade.Cache.get_current")
     def test_redo_copy(self, get_current_mock, redo_mock, copy_mock):
         self.prev_action["func"] = "copy"
-        get_current_mock.return_value = self.prev_action
+        get_current_mock.return_value = [self.prev_action]
         self.facade.redo()
         get_current_mock.assert_called_once()
         copy_mock.assert_called_with(
@@ -327,7 +327,7 @@ class TestRedo(unittest.TestCase):
     @patch("explorer.facade.Cache.get_current")
     def test_redo_move(self, get_current_mock, redo_mock, move_mock):
         self.prev_action["func"] = "move"
-        get_current_mock.return_value = self.prev_action
+        get_current_mock.return_value = [self.prev_action]
         self.facade.redo()
         get_current_mock.assert_called_once()
         move_mock.assert_called_with(
@@ -340,7 +340,7 @@ class TestRedo(unittest.TestCase):
     @patch("explorer.facade.Cache.get_current")
     def test_redo_rename(self, get_current_mock, redo_mock, rename_mock):
         self.prev_action["func"] = "rename"
-        get_current_mock.return_value = self.prev_action
+        get_current_mock.return_value = [self.prev_action]
         self.facade.redo()
         get_current_mock.assert_called_once()
         rename_mock.assert_called_with(
@@ -353,7 +353,7 @@ class TestRedo(unittest.TestCase):
     @patch("explorer.facade.Cache.get_current")
     def test_redo_sets_last_redo(self, get_curr_mock, redo_mock, rename_mock):
         self.prev_action["func"] = "rename"
-        get_curr_mock.return_value = self.prev_action
+        get_curr_mock.return_value = [self.prev_action]
         self.facade.redo()
         self.assertEqual(self.prev_action, self.facade.last_redo)
 
@@ -362,7 +362,7 @@ class TestRedo(unittest.TestCase):
     @patch("explorer.facade.Cache.get_current")
     def test_redo_sets_last_redo(self, get_curr_mock, redo_mock, rename_mock):
         self.prev_action["func"] = "rename"
-        get_curr_mock.return_value = self.prev_action
+        get_curr_mock.return_value = [self.prev_action]
         self.facade.last_undo = "foo_bar"
         self.facade.redo()
         self.assertIsNone(self.facade.last_undo)
@@ -372,7 +372,7 @@ class TestRedo(unittest.TestCase):
     @patch("explorer.facade.Cache.get_current")
     def test_cant_redo_same_action(self, get_curr_mock, redo_mock, rename_mock):
         self.prev_action["func"] = "rename"
-        get_curr_mock.return_value = self.prev_action
-        self.facade.last_redo = self.prev_action
+        get_curr_mock.return_value = [self.prev_action]
+        self.facade.last_redo = [self.prev_action]
         self.facade.redo()
         rename_mock.assert_not_called()
