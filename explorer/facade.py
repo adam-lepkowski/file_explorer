@@ -151,31 +151,32 @@ class Facade:
         self.current_obj = current
 
 
-    def transfer(self, src, name, dst, func):
+    def transfer(self, objs):
         """
-        Transfer (copy/move) an object from src to dst.
+        Transfer (copy/move) objects from src to dst.
 
         Parameters
         ---------------
-        src : str
-            path to source dir
-        name : str
-            name of file/directory to be transfered
-        dst : str
-            path to destination dir
-        func : {move, copy}
-            file operation intended for src file
+        objs: dict
+            src: parent directory
+            names: src file/dir names selected
+            dst: path to destination dir
+            func : {move, copy}
+                file operation intended for src file
         """
 
-        src = Path(src) / str(name)
-        new_obj = getattr(self.fe, func)(src, dst)
-        item = {
-            "src": src,
-            "func": func,
-            "dst": Path(dst),
-            "new_obj": new_obj
-        }
-        self.cache.store(item)
+        items = []
+        for name in objs["names"]:
+            src = Path(objs["src"]) / str(name)
+            new_obj = getattr(self.fe, objs["func"])(src, objs["dst"])
+            item = {
+                "src": src,
+                "func": objs["func"],
+                "dst": Path(objs["dst"]),
+                "new_obj": new_obj
+            }
+            items.append(item)
+        self.cache.store(items)
 
     def rename(self, directory, name, new_name):
         """
