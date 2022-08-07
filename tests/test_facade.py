@@ -168,8 +168,6 @@ class TestTransfer(unittest.TestCase):
         self.assertEqual(expected, result)
 
 
-
-
 class TestRename(unittest.TestCase):
 
     def setUp(self):
@@ -190,14 +188,23 @@ class TestDelete(unittest.TestCase):
 
     def setUp(self):
         self.facade = Facade()
-        self.src = "src/foo"
-        self.name = "bar.py"
+        self.objs = {
+            "parent": "src/foo",
+            "names": ["bar.py"],
+        }
 
     @patch("explorer.facade.Path.exists", return_value=True)
     @patch("explorer.facade.FileExplorer.rm")
     def test_delete(self, rm_mock, exists_mock):
-        self.facade.delete(self.src, self.name)
-        rm_mock.assert_called_with(Path(self.src) / self.name)
+        self.facade.delete(self.objs)
+        rm_mock.assert_called_with(Path("src/foo/bar.py"))
+
+    @patch("explorer.facade.Path.exists", return_value=True)
+    @patch("explorer.facade.FileExplorer.rm")
+    def test_delete_multiple(self, rm_mock, exists_mock):
+        self.objs["names"].append("foo.py")
+        self.facade.delete(self.objs)
+        self.assertEqual(rm_mock.call_count, 2)
 
 
 class TestUndo(unittest.TestCase):
