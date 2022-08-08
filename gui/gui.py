@@ -89,6 +89,7 @@ class GUI(tk.Tk):
         tab.l_frm.tree.tree.bind("<Control_L><x>", lambda e: self.store_src("move", e))
         tab.l_frm.tree.tree.bind("<Control_L><v>", self.paste)
         tab.l_frm.tree.tree.bind("<Delete>", self.delete)
+        tab.l_frm.tree.tree.bind("<Double-Button-1>", self.open)
         if self.view_var.get() == "double":
             tab.transfer_bar.copy_right_btn["command"] = lambda: self.transfer("right", "copy")
             tab.transfer_bar.copy_left_btn["command"] = lambda: self.transfer("left", "copy")
@@ -110,6 +111,7 @@ class GUI(tk.Tk):
             tab.r_frm.tree.tree.bind("<Control_L><x>", lambda e: self.store_src("move", e))
             tab.r_frm.tree.tree.bind("<Control_L><v>", self.paste)
             tab.r_frm.tree.tree.bind("<Delete>", self.delete)
+            tab.r_frm.tree.tree.bind("<Double-Button-1>", self.open)
         self.nbook.add(tab, text=text)
         self.refresh()
 
@@ -354,4 +356,19 @@ class GUI(tk.Tk):
             title = "Operation can't be redone"
             message = "An error has occured while redoing operation "
             msg.showerror(title=title, message=f"{message}: {str(e)}")
+        self.refresh()
+
+    def open(self, event):
+        """
+        Open file or dir. If file - open in default application or choose one.
+        If dir - display it's content. Show error message if it does not exist
+        or user has no permission.
+        """
+
+        row = event.widget.item(event.widget.selection())["values"]
+        name = row[0]
+        current_dir = event.widget.master.master.nav_bar.addr_var.get()
+        dst_dir = self.fe.open(current_dir, name)
+        if dst_dir:
+            event.widget.master.master.nav_bar.addr_var.set(dst_dir)
         self.refresh()
