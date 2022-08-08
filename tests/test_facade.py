@@ -376,3 +376,26 @@ class TestRedo(unittest.TestCase):
         self.facade.last_redo = [self.prev_action]
         self.facade.redo()
         rename_mock.assert_not_called()
+
+
+class TestOpen(unittest.TestCase):
+
+    def setUp(self):
+        self.facade = Facade()
+        self.directory = "foo"
+        self.name = "bar.py"
+
+    @patch("explorer.facade.Path.is_file", return_value=True)
+    @patch("explorer.facade.FileExplorer.open_file")
+    def test_open_file(self, openf_mock, if_file_mock):
+        self.facade.open(self.directory, self.name)
+        openf_mock.assert_called_with(Path(self.directory) / self.name)
+
+    @patch("explorer.facade.Path.is_dir", return_value=True)
+    @patch("explorer.facade.Path.is_file", return_value=False)
+    @patch("explorer.facade.FileExplorer.open_file")
+    def test_open_dir(self, openf_mock, if_file_mock, is_dir_mock):
+        result = self.facade.open(self.directory, self.name)
+        expected = Path(self.directory) / self.name
+        openf_mock.assert_not_called()
+        self.assertEqual(expected, result)
