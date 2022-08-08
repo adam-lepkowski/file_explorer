@@ -273,3 +273,19 @@ class Facade:
         self.last_redo = None
         self.last_undo = None
         self.cache.clear()
+
+    def open(self, directory, name):
+        """
+        Open a file/directory
+
+        Returns
+        ---------------
+        path: Path or None
+            Path if target object is a directory, None if file.
+        """
+
+        path = Path(directory) / str(name)
+        if path.is_dir():
+            return path
+        elif path.is_file():
+            self.fe.open_file(path)
