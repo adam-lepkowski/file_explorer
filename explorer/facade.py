@@ -202,7 +202,7 @@ class Facade:
                 "dst": Path(dst),
                 "new_obj": new_obj
             }
-            self.cache.store(item)
+            self.cache.store([item])
         else:
             raise FileNotFoundError("Invalid source directory path")
 
