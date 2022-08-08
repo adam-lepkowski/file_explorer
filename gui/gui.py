@@ -142,6 +142,9 @@ class GUI(tk.Tk):
         except FileNotFoundError as e:
             msg.showerror(title="Invalid directory", message=str(e))
             button.master.addr_var.set(button.master.master.current_dir)
+        except PermissionError as e:
+            msg.showerror(title="Permission denied", message=str(e))
+            button.master.addr_var.set(button.master.master.current_dir)
 
     def refresh(self):
         """
