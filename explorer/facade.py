@@ -38,7 +38,7 @@ class Facade:
             path to current user's home directory
         """
 
-        path = Path(os.environ['userprofile'])
+        path = Path(os.environ['userprofile']) / "Documents"
         return path
 
     def get_content(self, path):
