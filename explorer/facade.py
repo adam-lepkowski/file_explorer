@@ -349,7 +349,7 @@ class Facade:
             item = {
                 "src": src,
                 "func": "rename",
-                "dst": dst,
+                "dst": new_obj.stem,
                 "new_obj": new_obj
             }
             items.append(item)
