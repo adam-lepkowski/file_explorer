@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, call
 from pathlib import Path
 
 from parameterized import parameterized
@@ -399,3 +399,72 @@ class TestOpen(unittest.TestCase):
         expected = Path(self.directory) / self.name
         openf_mock.assert_not_called()
         self.assertEqual(expected, result)
+
+
+class TestRenameMany(unittest.TestCase):
+
+    def setUp(self):
+        self.facade = Facade()
+        self.objs = {
+            "parent": "src",
+            "names": ["bar.py"],
+        }
+
+    @parameterized.expand([
+        ("none", None, None),
+        ("prefix", "foo_pref", None),
+        ("suffix", None, "foo_suff"),
+        ("both", "foo_pref", "foo_suff")
+    ])
+    @patch("explorer.facade.FileExplorer.rename")
+    def test_rename_many(self, name, prefix, suffix, rename_mock):
+        self.facade.rename_many(self.objs, "foo", prefix, suffix)
+        rename_mock.assert_called_with(
+            Path("src/bar.py"), Path("src/foo"), prefix, suffix
+        )
+
+    @parameterized.expand([
+        ("today", "%today%", "%Y%m%d"),
+        ("creation_date", "%creationd%", "%Y%m%d"),
+        ("creation_datetime", "%creationdt%", "%Y%m%d%H%M%S")
+    ])
+    @patch("explorer.facade.time.strftime")
+    @patch("explorer.facade.time.localtime")
+    @patch("explorer.facade.os.path.getctime")
+    @patch("explorer.facade.FileExplorer.rename")
+    def test_rename_many_predefined_prefix(self, name, prefix, format,
+                                           rename_mock, ctime_mock, local_mock,
+                                           strftime_mock):
+        self.facade.rename_many(self.objs, "foo", prefix=prefix)
+        strftime_mock.assert_called_with(format, local_mock())
+        rename_mock.assert_called_with(
+            Path("src/bar.py"), Path("src/foo"), strftime_mock(), None
+        )
+
+    @parameterized.expand([
+        ("today", "%today%", "%Y%m%d"),
+        ("creation_date", "%creationd%", "%Y%m%d"),
+        ("creation_datetime", "%creationdt%", "%Y%m%d%H%M%S")
+    ])
+    @patch("explorer.facade.time.strftime")
+    @patch("explorer.facade.time.localtime")
+    @patch("explorer.facade.os.path.getctime")
+    @patch("explorer.facade.FileExplorer.rename")
+    def test_rename_many_predefined_suffix(self, name, suffix, format,
+                                           rename_mock, ctime_mock, local_mock,
+                                           strftime_mock):
+        self.facade.rename_many(self.objs, "foo", suffix=suffix)
+        strftime_mock.assert_called_with(format, local_mock())
+        rename_mock.assert_called_with(
+            Path("src/bar.py"), Path("src/foo"), None, strftime_mock()
+        )
+
+    @patch("explorer.facade.FileExplorer.rename")
+    def test_rename_many_files(self, mock_rename):
+        self.objs["names"].append("foo.py")
+        self.facade.rename_many(self.objs, "new_name")
+        calls = [
+            call(Path("src/bar.py"), Path("src/new_name"), None, None),
+            call(Path("src/foo.py"), Path("src/new_name_1"), None, None)
+        ]
+        mock_rename.assert_has_calls(calls)
