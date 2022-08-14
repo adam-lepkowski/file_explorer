@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as msg
 
-from gui.frames import Explorer
+from gui.frames import Explorer, RenameMany
 from explorer import Facade
 
 
@@ -264,15 +264,33 @@ class GUI(tk.Tk):
 
     def rename_popup(self):
         """
-        Display an entry to rename object.
+        Display entries to rename objects.
         """
 
-        x, y, w, h = self.prev_focus.bbox(self.prev_focus.focus(), column="Name")
-        entry = ttk.Entry(self.prev_focus)
-        entry.place(x=x, y=y, width=w, height=h)
-        entry.focus()
-        entry.bind("<FocusOut>", lambda e: entry.destroy())
-        entry.bind("<Return>", lambda e: self.rename(entry))
+        if len(self.prev_focus.selection()) == 1:
+            x, y, w, h = self.prev_focus.bbox(self.prev_focus.focus(), column="Name")
+            entry = ttk.Entry(self.prev_focus)
+            entry.place(x=x, y=y, width=w, height=h)
+            entry.focus()
+            entry.bind("<FocusOut>", lambda e: entry.destroy())
+            entry.bind("<Return>", lambda e: self.rename(entry))
+        elif len(self.prev_focus.selection()) > 1:
+            rename = RenameMany(self)
+            rename.submit_btn["command"] = lambda: self.rename_many(rename)
+
+    def rename_many(self, rename):
+        """
+        Rename object using a common name and optional predefined or custom
+        prefix and suffix.
+        """
+
+        selection = self.get_path()
+        prefix = rename.pref_var.get()
+        name = rename.name_var.get()
+        suffix = rename.suff_var.get()
+        self.fe.rename_many(selection, name, prefix, suffix)
+        self.refresh()
+        rename.destroy()
 
     def rename(self, entry):
         """
