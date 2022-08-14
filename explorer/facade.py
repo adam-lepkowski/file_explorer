@@ -289,3 +289,68 @@ class Facade:
             return path
         elif path.is_file():
             self.fe.open_file(path)
+
+    def rename_many(self, objs, new_name, prefix=None, suffix=None):
+        """
+        Rename many objects using custom or predefined prefix/suffix. All files
+        will have their indexes added after new_name (except the first one).
+        Prefedined prefix/suffix:
+        %today%: return current date. Format "%Y%m%d"
+        %creationd%: return src creation date. Format "%Y%m%d"
+        %creationdt%: return src creation datetime. Format "%Y%m%d%H%M%S"
+
+        Parameters
+        ---------------
+        objs: dict
+            parent: parent directory
+            names: src file/dir names selected
+        new_name : str
+            new name for file or directory. File should not contain extension.
+        prefix: str, default=None
+            add before new_name- path/prefix_new_name
+        """
+
+        items = []
+        for i, name in enumerate(objs["names"]):
+
+            dst_name = str(new_name) if i == 0 else f"{new_name}_{i}"
+            src = Path(objs["parent"]) / str(name)
+            dst = Path(objs["parent"]) / str(dst_name)
+
+            if prefix == "%today%":
+                d_format = "%Y%m%d"
+                prefix = time.strftime(d_format, time.localtime())
+            elif prefix == "%creationd%":
+                d_format = "%Y%m%d"
+                prefix = time.strftime(
+                    d_format, time.localtime(os.path.getctime(src))
+                )
+            elif prefix == "%creationdt%":
+                dt_format = "%Y%m%d%H%M%S"
+                prefix = time.strftime(
+                    dt_format, time.localtime(os.path.getctime(src))
+                )
+
+            if suffix == "%today%":
+                d_format = "%Y%m%d"
+                suffix = time.strftime(d_format, time.localtime())
+            elif suffix == "%creationd%":
+                d_format = "%Y%m%d"
+                suffix = time.strftime(
+                    d_format, time.localtime(os.path.getctime(src))
+                )
+            elif suffix == "%creationdt%":
+                dt_format = "%Y%m%d%H%M%S"
+                suffix = time.strftime(
+                    dt_format, time.localtime(os.path.getctime(src))
+                )
+
+            new_obj = self.fe.rename(src, dst, prefix, suffix)
+            item = {
+                "src": src,
+                "func": "rename",
+                "dst": dst,
+                "new_obj": new_obj
+            }
+            items.append(item)
+        self.cache.store(items)
